@@ -4,7 +4,6 @@ Given /^url "([^"]*)"$/ do |url|
 end
 
 When /^username is set$/ do 
-  #put ENV['USER']
   fill_in 'userid', :with => ENV['BANKUSER']
 end
 
