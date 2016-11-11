@@ -1,4 +1,4 @@
-# Using cucumber, rspec and capybara to login to site and download files 
+# Playing with cucumber, rspec and capybara 
 
 
 ##How to set up the environment
