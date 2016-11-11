@@ -5,6 +5,12 @@
 run the bash script set-up-env.sh
 
 ## Dependancies
+**Ruby** - RSpec, Capybara and Cucumber are all programmed in Ruby
+
+**RVM** - Makes sure this ruby install will not mess with your other installs
+
+**Homebrew** - the `set-up-env.sh` script requires brew which only works on OSX but can be replaced easily by using another package manager 
+
 **Cucumber** - A Ruby gem that allows mapping Ruby functions to plain text in a "features" file which will run behavior driven tests in the browser.
 
 **Gherkin** - The .feature files that cucumber uses which allows plain english grammars to be mapped to functions in step_definitions/
