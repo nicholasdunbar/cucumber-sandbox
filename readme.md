@@ -48,7 +48,16 @@ I hope that clears up what all these tools are and how they work together.
 
 ## Examples
 
-### Step Definition Notes
+`cucumber features/greater.feature`  
+Example of a hello world 
+
+`cucumber features/search.feature`  
+Example of making google search for something
+
+`cucumber features/bank.feature`  
+Example of a more complicated Cucumber that logs in to wellsfargo and downloads a statement  
+
+## Step Definition Notes
 
 Examples on commands that can be used in step definitions:  
 
@@ -63,7 +72,7 @@ add methods to the CustomWorld class in features/support/env.rb
 To stall a test so you can see what is going on  
 `sleep 10`
 
-## Notes
+## Other Notes
 **Poltergeist** - A headless driver which integrates Capybara with PhantomJS. It is truly headless, so doesn't require Xvfb to run on your CI server. It will also detect and report any Javascript errors that happen within the page.
 
 **rino** - cucumber step_definitions can be written using javascript with node `npm install -g cucumber`
