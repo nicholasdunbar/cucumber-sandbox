@@ -5,14 +5,13 @@
 run the bash script `set-up-env.sh`
 
 ##How to run the script
-Edit .env.dev
-From the root of the project run
-`cucumber features/`
-To run with a custom configuration duplicate features/support/.env.dev to something like .env.custom
-`cucumber TARGET=custom features/`
+Edit .env.dev  
+From the root of the project run  
+`cucumber features/`  
+To run with a custom configuration duplicate features/support/.env.dev to something like .env.custom  
+`cucumber TARGET=custom features/`  
 
-
-## Dependancies
+##Dependancies
 **Ruby** - RSpec, Capybara and Cucumber are all programmed in Ruby
 
 **RVM** - Makes sure this ruby install will not mess with your other installs
@@ -31,16 +30,37 @@ To run with a custom configuration duplicate features/support/.env.dev to someth
 
 **Marionette** - GeckoDriver for FireFox which is required for selenium to work. Gherkin talks to the step definitions and they then talk to capybara which then talks to selenium (if it is set up to use that driver) which then talks to GeckoDriver if you are using FireFox in capybara. It can be installed using `brew gekodriver`
 
+###How the components interrelate
+At first I didn't understand how all these dependancies worked together. Here is the gist of it.
 
+In this set-up everything is ran in Ruby. Cucumber is the testing framework that allows us to write tests for browser automation. Gherkin and step definitions come with Cucumber. Gherkin scripts are plain english statements found in a file named like the following *.feature. Step definitions is where the code lives that Gherkin runs. In this set-up, step definitions are written in Ruby but they could be written in most any language. You can find implementations of cucumber in all sorts of languages. Each Gherkin plain english statement maps to a step definition. Function definitions for the Gherkin scripts are called step definitions and they can be found in features/step_definitions/*.rb. 
+
+Inside the step definitions we need an API that allows us to send commands to a browser. We do this using Capybara which is a set of standard commands for browser automation, like click here or fill out this field, etc. It is a wrapper for a web driver. Web drivers are browser specific APIs that allow us to send commands to the browser. Capybara can be configured to use a number of web drivers. There are all sorts of web drivers out there, in this situation we are using the two following web drivers: GeckoDriver (which is also called Marionette) and ChromeDriver. Marionette allows us to control FireFox and ChromeDriver allows us to control Chrome. 
+
+Ruby based Cucumber is built on top of RSpec. Rspec can also be used on it's own for browser automation if you don't need the Gherkin scripts so that the tests are human readable. If you're already using Cucumber you probably only need RSpec to do unit tests with your back-end Ruby scripts.
+
+I hope that clears up what all these tools are and how they work together. 
+
+##Folders 
+
+**features** - this is where all the cucumber scripts are located  
+**spec** - this is where the RSpec scripts are located
 
 ## Examples
 
 ### Step Definition Notes
 
-Examples on commands that can be used in step definitions
-to print to console use:  
-`STDOUT.puts "test global vars"`
-to stall a test so you can see what is going on
+Examples on commands that can be used in step definitions:  
+
+To print to console use:  
+`puts "some string"`
+this calls  
+`STDOUT.puts` in features/support/env.rb on the class CustomWorld
+
+To add global custom helper functions  
+add methods to the CustomWorld class in features/support/env.rb
+
+To stall a test so you can see what is going on  
 `sleep 10`
 
 ## Notes
@@ -52,7 +72,7 @@ to stall a test so you can see what is going on
 
 ### Attempts to configure the browser
 
-I was trying to set the firefox profile in env.rb with the following code, but something is missing:
+Sometimes you want to configure the browser to use the settings of a certain user. This is called in fireFox the profile of the user. In FF (less than or equal to 47) you could do this easily. But now with FF moving to Marionette there is no easy way to configure Capybara to load the browser with a certain profile. I was trying to set the Firefox profile in env.rb with the following code, but something is missing:
 ```
 require 'base64'
 base64Path2Profile = Base64.encode64('/Users/dunban1/Library/Application Support/Firefox/Profiles/fc9zmymw.DefaultUser')
@@ -93,5 +113,6 @@ prefs = {
  }
  ffProfile = { 'prefs' => prefs }
 ```
+Maybe you could take this work I've done, figure out the answer and message me. In the mean time I'm waiting for Capybara to support this with Marionette.
 
 edited using : https://pandao.github.io/editor.md/en.html
