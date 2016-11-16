@@ -5,7 +5,12 @@
 run the bash script `set-up-env.sh`
 
 ##How to run the script
-`cucumber features`
+Edit .env.dev
+From the root of the project run
+`cucumber features/`
+To run with a custom configuration duplicate features/support/.env.dev to something like .env.custom
+`cucumber TARGET=custom features/`
+
 
 ## Dependancies
 **Ruby** - RSpec, Capybara and Cucumber are all programmed in Ruby
