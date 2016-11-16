@@ -1,8 +1,16 @@
 Feature: Login to bank and download statement
-  This automates getting my bank statements
+  This is used as an example 
+  this automates getting bank statements
 
 Scenario: Login
-  Given url "https://www.wellsfargo.com"
+  Given the domain "https://www.wellsfargo.com"
   When username is set
   When password is set
-  Then there is an h2 "Buying a house?"
+  When the go button is clicked
+  And the "Statements & Documents" link is clicked within "#navfooter"
+  Given the page contains "Statements and Documents"
+  #And the "Statements and Disclosures" link is clicked
+  And open the statement list
+  Then the statement list is open
+  And download missing docs
+  And wait for "5" seconds

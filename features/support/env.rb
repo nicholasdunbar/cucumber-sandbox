@@ -3,6 +3,7 @@ require 'capybara/dsl'
 require 'cucumber'
 require 'selenium-webdriver'
 require 'dot_env'
+require 'nokogiri'
 
 #load environment variables from .env file
 #use > cucumber TARGET=sometarget features to load a specific .env.sometarget
@@ -32,12 +33,12 @@ Capybara.register_driver :selenium do |app|
     Capybara::Selenium::Driver.new app, browser: :firefox
   end
 end
-Capybara.default_max_wait_time = ENV['TIMEOUT'];
+Capybara.default_max_wait_time = (ENV['TIMEOUT'] || 20).to_i
 
 #put methods and members here you want to be available in the step definitions
 module CustomWorld
-  def a_helper
-    puts 'a_helper function was run'
+  def puts(text)
+    STDOUT.puts text
   end
 end
 
