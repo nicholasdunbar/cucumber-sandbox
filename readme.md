@@ -26,9 +26,15 @@ To run with a custom configuration duplicate features/support/.env.dev to someth
 
 **Rspec** - A Ruby defined DSL (Domain Specific Language) and a library that can be used to run behavior driven tests in the browser you can also use it to do unit tests on Ruby code if you are using Ruby in your application.
 
-**Capybara** - A wrapper for webdrivers. Use this if you want to use one API that maps to both Chrome and Firefox. It can also be used for headless testing. Documentation found at http://www.rubydoc.info/github/jnicklas/capybara/master
+**Capybara** - A wrapper for web drivers. Use this if you want to use one API that maps to any web driver of your choice. In this case we are using selenium which provides and API to both Chrome and Firefox, but you could replace it with other web drivers. It can also be used for headless testing. Documentation found at http://www.rubydoc.info/github/jnicklas/capybara/master  
 
-**Marionette** - GeckoDriver for FireFox which is required for selenium to work. Gherkin talks to the step definitions and they then talk to capybara which then talks to selenium (if it is set up to use that driver) which then talks to GeckoDriver if you are using FireFox in capybara. It can be installed using `brew gekodriver`
+**Selenium** - A web driver that works for both chrome and firefox. It provides one API for both browsers which in this case is in Ruby but could be in any number of languages. However in this set-up we are wrapping selenium inside of Capybara so we don't need to make direct calls on the selenium API. Selenium has two different paths to automate FireFox and Chrome. It talks to FireFox through Marionette (which depends on GeckoDriver) and it talks to Chrome through ChromeDriver. So why do we use Capybara? Because it allows for more freedom in what drivers we want to use that way we aren't locked in to selenium and because the Capybara library is easier to use than the Selenium one.  
+
+**Marionette** -  A set of tools for automating and testing Gecko-based browsers like Firefox. GeckoDriver and Marionette Server are some of those such tools. Marrionette implements an automation protocol using W3C WebDriver compatibility. Its goal is to replicate what Selenium does but again, only for Gecko-based browsers. We still need Selenium, if we want to be able to talk to multiple browsers. Selenium 3.0 or later, enables support for Marionette by default.  
+
+**GeckoDriver**  - A web driver. GeckoDriver for FireFox is required for selenium to work with FireFox after FireFox 47. Gherkin talks to the step definitions and they then talk to Capybara which then talks to Selenium (if it is set up to use FireFox) which then talks to GeckoDriver. It can be installed using `brew gekodriver`  
+
+**Marionette Server** - Built into the FireFox browser and receives Marionette commands from the GeckoDriver. 
 
 ###How the components interrelate
 At first I didn't understand how all these dependancies worked together. Here is the gist of it.
@@ -39,7 +45,8 @@ Inside the step definitions we need an API that allows us to send commands to a 
 
 Ruby based Cucumber is built on top of RSpec. Rspec can also be used on it's own for browser automation if you don't need the Gherkin scripts so that the tests are human readable. If you're already using Cucumber you probably only need RSpec to do unit tests with your back-end Ruby scripts.
 
-I hope that clears up what all these tools are and how they work together. 
+I hope that clears up what all these tools are and how they work together. Here is a good article for further reading:
+http://www.erranderr.com/blog/webdriver-ontology.html
 
 ##Folders 
 
