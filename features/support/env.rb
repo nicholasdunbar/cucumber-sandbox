@@ -24,15 +24,50 @@ puts "Timeout: #{ENV['TIMEOUT']}"
 #make environment available to all scripts globally 
 $ENV = ENV;
 
-Capybara.default_driver = :selenium
-Capybara.register_driver :selenium do |app|
+
   case $ENV['BROWSER']
   when "CHROME"
-    Capybara::Selenium::Driver.new app, browser: :chrome
+    Capybara.default_driver = :selenium
+    Capybara.register_driver :selenium do |app|
+      Capybara::Selenium::Driver.new app, browser: :chrome
+    end
+  when "FIREFOX-PROFILE"
+    #Register driver to use a hard coded FireFox Profile 
+    Capybara.register_driver :firefox do |app|
+      profile = Selenium::WebDriver::Firefox::Profile.new
+      profile['general.useragent.override'] = ENV['USERAGENT']
+      desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
+        {
+          marionette: true,
+          firefox_options: { profile: profile.as_json.values.first }
+        }
+      )
+      Capybara::Selenium::Driver.new(app, :browser => :firefox, desired_capabilities: desired_caps)
+    end
+    Capybara.default_driver = :firefox
+  when "FIREFOX-SAVED-PROFILE"
+    #Register driver to use a presaved FireFox Profile 
+    Capybara.register_driver :geckodriver do |app|
+      profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
+      caps = Selenium::WebDriver::Remote::Capabilities.firefox(
+        {
+          firefox_options: {profile: profile},
+        }
+      )
+      
+      Capybara::Selenium::Driver.new(
+        app,
+        browser: :firefox,
+        desired_capabilities: caps
+      )
+    end
+    Capybara.current_driver = :geckodriver
   else
-    Capybara::Selenium::Driver.new app, browser: :firefox
+    Capybara.register_driver :firefox do |app|
+      Capybara::Selenium::Driver.new app, browser: :firefox
+    end
+    Capybara.default_driver = :firefox
   end
-end
 Capybara.default_max_wait_time = (ENV['TIMEOUT'] || 20).to_i
 
 #put methods and members here you want to be available in the step definitions

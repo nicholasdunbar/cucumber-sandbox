@@ -88,27 +88,23 @@ To stall a test so you can see what is going on
 
 ### Attempts to configure the browser
 
-Sometimes you want to configure the browser to use the settings of a certain user. This is called in fireFox the profile of the user. In FF (less than or equal to 47) you could do this easily. But now with FF moving to Marionette there is no easy way to configure Capybara to load the browser with a certain profile. I was trying to set the Firefox profile in env.rb with the following code, but something is missing:
+Sometimes you want to configure the browser to use the settings of a certain user. This is called in fireFox the profile of the user. In FF (less than or equal to 47) you could do this easily. But now with FF moving to Marionette there is no easy way to configure Capybara to load the browser with a certain profile. I was trying to set the Firefox Profile in env.rb with the following code, but something is missing, it works in cucumber but not with RSpec:
 ```
-require 'base64'
-base64Path2Profile = Base64.encode64('/Users/dunban1/Library/Application Support/Firefox/Profiles/fc9zmymw.DefaultUser')
-ffProfile = { 'profile' => base64Path2Profile }
-
-Capybara.default_driver = :selenium
-Capybara.register_driver :selenium do |app|
-  #make capabilities object  
-  desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
+Capybara.register_driver :geckodriver do |app|
+  profile = Selenium::WebDriver::Zipper.zip('/Users/dunban1/Library/Application Support/Firefox/Profiles/s1xdknox.testprofile')
+  caps = Selenium::WebDriver::Remote::Capabilities.firefox(
     {
-      marionette: true,
-      firefox_profile: ffProfile
+      firefox_options: {profile: profile},
     }
   )
+  
   Capybara::Selenium::Driver.new(
     app,
     browser: :firefox,
-    desired_capabilities: desired_caps
+    desired_capabilities: caps
   )
 end
+Capybara.current_driver = :geckodriver
 ```
 
 I was doing this based on a comment by @twalpol in https://github.com/teamcapybara/capybara/issues/1710
@@ -118,16 +114,25 @@ https://github.com/mozilla/geckodriver
 
 I thought eventually I would be able to set the profile to the following:
 ```
-prefs = {
- 'browser.startup.homepage_override.mstone' => 'ignore',
- 'startup.homepage_welcome_url.additional' => 'about:blank',
- "browser.download.folderList" => 2,
- "browser.download.manager.showWhenStarting" => false,
- "browser.download.dir" => File.expand_path("../../../", __FILE__)+"/temp/downloads",
- "browser.helperApps.neverAsk.saveToDisk" => "application/pdf",
- "plugin.disable_full_page_plugin_for_types" => "application/pdf"
- }
- ffProfile = { 'prefs' => prefs }
+ Capybara.register_driver :firefox do |app|
+   profile = Selenium::WebDriver::Firefox::Profile.new
+   profile['general.useragent.override'] = ENV['USERAGENT']
+   profile['browser.startup.homepage_override.mstone'] = 'ignore'
+   profile['startup.homepage_welcome_url.additional'] = 'about:blank'
+   profile['browser.download.folderList'] = 2
+   profile['browser.download.manager.showWhenStarting'] = false
+   profile['browser.download.dir'] = File.expand_path("../../../", __FILE__)+"/temp/downloads"
+   profile['browser.helperApps.neverAsk.saveToDisk'] = "application/pdf"
+   profile['plugin.disable_full_page_plugin_for_types'] = "application/pdf"
+   desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
+     {
+       marionette: true,
+       firefox_options: { profile: profile.as_json.values.first }
+     }
+   )
+   Capybara::Selenium::Driver.new(app, :browser => :firefox, desired_capabilities: desired_caps)
+ end
+ Capybara.default_driver = :firefox
 ```
 Maybe you could take this work I've done, figure out the answer and message me. In the mean time I'm waiting for Capybara to support this with Marionette.
 

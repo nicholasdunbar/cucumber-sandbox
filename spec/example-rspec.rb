@@ -9,6 +9,7 @@ RSpec.configure do |config|
   end
 end
 
+#Test rspec using just selenium
 describe "SeleniumSpec" do
 
   before(:each) do
