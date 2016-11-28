@@ -1,15 +1,20 @@
 # Playing with cucumber, rspec and capybara 
-
+This is a full set-up of the above technologies. You can clone this repository for your own learning and start playing with these libraries.
 
 ##How to set up the environment
 run the bash script `set-up-env.sh`
 
-##How to run the script
+##How to run a cucumber script
 Edit .env.dev  
 From the root of the project run  
 `cucumber features/`  
 To run with a custom configuration duplicate features/support/.env.dev to something like .env.custom  
 `cucumber TARGET=custom features/`  
+
+##How to run a RSpec script
+Edit .env.dev  
+From the root of the project run  
+`rspec spec/`
 
 ##Dependancies
 **Ruby** - RSpec, Capybara and Cucumber are all programmed in Ruby
@@ -51,9 +56,11 @@ http://www.erranderr.com/blog/webdriver-ontology.html
 ##Folders 
 
 **features** - this is where all the cucumber scripts are located  
+**features/step_definitions** - This is where the code evoked by the Gherkin scripts is located
+**features/support** - This is where the configuration for Cucumber is located.  
 **spec** - this is where the RSpec scripts are located
 
-## Examples
+## Cucumber Examples
 
 `cucumber features/greater.feature`  
 Example of a hello world 
@@ -63,6 +70,14 @@ Example of making google search for something
 
 `cucumber features/bank.feature`  
 Example of a more complicated Cucumber that logs in to wellsfargo and downloads a statement  
+
+## RSpec Examples
+
+`rspec spec/example-rspec-capybara.rb`  
+Example of using Capybara with RSpec
+
+`rspec spec/example-rspec.rb``  
+Example of using pure RSpec with Selenium
 
 ## Step Definition Notes
 
