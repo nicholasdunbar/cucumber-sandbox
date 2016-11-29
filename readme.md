@@ -110,7 +110,7 @@ To stall a test so you can see what is going on
 
 ## Attempts to configure the browser
 
-Sometimes you want to configure the browser to use the settings of a certain user. This is called in fireFox the profile of the user. In FF (less than or equal to 47) you could do this easily. But now with FF moving to Marionette there is no easy way to configure Capybara to load the browser with a certain profile. I was trying to set the Firefox Profile in env.rb with the following code, it works in cucumber but not with spec/example-rspec-capybara.rb using RSpec with Capybara:
+Sometimes you want to configure the browser to use the settings of a certain user. This is called the FireFox Profile. In FF (less than or equal to 47) you could do this easily. But now with FF moving to Marionette it is difficult to configure Capybara to load the browser with a certain profile because all the old examples on the web and it doesn't work in all contexts. I was trying to set the Firefox Profile in env.rb with the following code, it works in Cucumber `cucumber features/test.features` and `rspec spec/example-rspec.rb` (Pure Selenium) but not with spec/example-rspec-capybara.rb using RSpec with Capybara:
 ```
 Capybara.register_driver :geckodriver do |app|
   profile = Selenium::WebDriver::Zipper.zip('/Users/dunban1/Library/Application Support/Firefox/Profiles/s1xdknox.testprofile')
