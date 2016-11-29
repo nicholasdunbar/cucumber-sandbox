@@ -22,6 +22,7 @@ describe "SeleniumSpec" do
       @driver = Selenium::WebDriver.for :chrome, :switches => %w[--ignore-certificate-errors --disable-popup-blocking --disable-translate]
     when "FIREFOX-PROFILE"
       #Does not work before FF48 - FF47 was the last FF version before they switched to Marrionette.
+      #documentation: http://www.rubydoc.info/gems/selenium-webdriver/0.0.28/Selenium/WebDriver/Firefox/Profile
       profile = Selenium::WebDriver::Firefox::Profile.new
       #example of a hardcoded profile value
       profile['general.useragent.override'] = ENV['USERAGENT']
@@ -58,15 +59,15 @@ describe "SeleniumSpec" do
   end
   
   ##############################TESTS##############################
-  it "check_SEIDE_version" do
-    @base_url = "https://github.com/"
-    @driver.get(@base_url + "/SeleniumHQ/selenium/wiki/SeIDE-Release-Notes")
-    @driver.find_element(:css, "#user-content-280").click
-    @driver.find_element(:xpath, "//div[@id='wiki-body']/div/ul[3]/li").text.should =~ /^[\s\S]*New[\s\S]*$/
-  end
-  
-  # it "check_SSL_certs" do
-  #   @base_url = "https://self-signed.badssl.com/"
-  #   @driver.get(@base_url)
+  # it "check_SEIDE_version" do
+  #   @base_url = "https://github.com/"
+  #   @driver.get(@base_url + "/SeleniumHQ/selenium/wiki/SeIDE-Release-Notes")
+  #   @driver.find_element(:css, "#user-content-280").click
+  #   @driver.find_element(:xpath, "//div[@id='wiki-body']/div/ul[3]/li").text.should =~ /^[\s\S]*New[\s\S]*$/
   # end
+  
+  it "check_SSL_certs" do
+    @base_url = "https://self-signed.badssl.com/"
+    @driver.get(@base_url)
+  end
 end
