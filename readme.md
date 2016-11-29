@@ -1,5 +1,5 @@
 # Playing with cucumber, rspec and capybara 
-This is a full set-up of the above technologies. You can clone this repository for your own learning and start playing with these libraries.
+This is a full set-up of the above technologies since the FF48 switch to Marrionette. You can clone this repository for your own learning and start playing with these libraries. Since Marrionette is still being developed some features may not work.
 
 ## How to set up the environment
 run the bash script `set-up-env.sh`
@@ -17,6 +17,12 @@ From the root of the project run
 `rspec spec/somescript.rb`
 
 ## Dependancies
+**Chrome** - This sandbox supports the Chrome browser
+
+**FireFox** - This sandbox supports the FireFox browser only with the following configurations: RSpec+Selenium and Cucumber+Capybara. It does not support FireFox with RSpec+Capybara (this is due to the changes since FF48 when Marrionette and GeckoDriver was introduced this project is to try and figure out all the new configurations needed for FireFox).
+
+**WebKit** - not yet supported in this project
+
 **Ruby** - RSpec, Capybara and Cucumber are all programmed in Ruby
 
 **RVM** - Makes sure this ruby install will not mess with your other installs
