@@ -130,6 +130,7 @@ Capybara.current_driver = :geckodriver
 ```
 
 For more information on configuring your tests with a pre-existing FireFox Profile check out the following thread: [Cannot set FireFox Profile to work with Marrionette]( https://groups.google.com/forum/#!searchin/ruby-capybara/FireFox$20profile$20ssl%7Csort:relevance/ruby-capybara/AyAcBX9-lIE/1LpspvPqCwAJ)
+[To track the progress of support for geckodriver profiles](https://github.com/teamcapybara/capybara/issues/1710)
 
 and I was guessing at the encoding required by GeckoDriver using this documentation:
 https://github.com/mozilla/geckodriver
