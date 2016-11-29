@@ -1,22 +1,22 @@
 # Playing with cucumber, rspec and capybara 
 This is a full set-up of the above technologies. You can clone this repository for your own learning and start playing with these libraries.
 
-##How to set up the environment
+## How to set up the environment
 run the bash script `set-up-env.sh`
 
-##How to run a cucumber script
+## How to run a cucumber script
 Edit .env.dev  
 From the root of the project run  
 `cucumber features/`  
 To run with a custom configuration duplicate features/support/.env.dev to something like .env.custom  
 `cucumber TARGET=custom features/`  
 
-##How to run a RSpec script
+## How to run a RSpec script
 Edit .env.dev  
 From the root of the project run  
 `rspec spec/somescript.rb`
 
-##Dependancies
+## Dependancies
 **Ruby** - RSpec, Capybara and Cucumber are all programmed in Ruby
 
 **RVM** - Makes sure this ruby install will not mess with your other installs
@@ -41,7 +41,7 @@ From the root of the project run
 
 **Marionette Server** - Built into the FireFox browser and receives Marionette commands from the GeckoDriver. 
 
-###How the components interrelate
+### How the components interrelate
 At first I didn't understand how all these dependancies worked together. Here is the gist of it.
 
 In this set-up everything is ran in Ruby. Cucumber is the testing framework that allows us to write tests for browser automation. Gherkin and step definitions come with Cucumber. Gherkin scripts are plain english statements found in a file named like the following \*.feature. Step definitions is where the code lives that Gherkin runs. In this set-up, step definitions are written in Ruby but they could be written in most any language. You can find implementations of cucumber in all sorts of languages. Each Gherkin plain english statement maps to a step definition. Function definitions for the Gherkin scripts are called step definitions and they can be found in features/step_definitions/\*.rb. 
@@ -53,12 +53,24 @@ Ruby based Cucumber is built on top of RSpec. Rspec can also be used on it's own
 I hope that clears up what all these tools are and how they work together. Here is a good article for further reading:
 http://www.erranderr.com/blog/webdriver-ontology.html
 
-##Folders 
+# Anatomy of files and folders 
+
+## Folders 
 
 **features** - this is where all the cucumber scripts are located  
 **features/step_definitions** - This is where the code evoked by the Gherkin scripts is located
 **features/support** - This is where the configuration for Cucumber is located.  
 **spec** - this is where the RSpec scripts are located
+
+## Cucumber Files 
+
+**features/support/env.rb** - File which is loaded every time cucumber is ran. It contains global settings 
+**features/support/.env** - Environmental variables that are loaded by env.rb (this is non-standard for cucumber) This is so that you can create a .env.dev copy of the file which will not be tracked by Git so that you can separate your local environment variables from the production ones you have in your repository.
+
+## RSpec files 
+
+**spec/spec_helper.rb** - File that is included globally when running any RSpec test.  
+**spec/.env** -  Environmental variables that are loaded by spec_helper.rb (this is non-standard for RSpec) This is so that you can create a .env.dev copy of the file which will not be tracked by Git so that you can separate your local environment variables from the production ones you have in your repository.
 
 ## Cucumber Examples
 
@@ -94,16 +106,11 @@ add methods to the CustomWorld class in features/support/env.rb
 To stall a test so you can see what is going on  
 `sleep 10`
 
-## Other Notes
-**Poltergeist** - A headless driver which integrates Capybara with PhantomJS. It is truly headless, so doesn't require Xvfb to run on your CI server. It will also detect and report any Javascript errors that happen within the page.
+# Failures
 
-**rino** - cucumber step_definitions can be written using javascript with node `npm install -g cucumber`
+## Attempts to configure the browser
 
-## Failures
-
-### Attempts to configure the browser
-
-Sometimes you want to configure the browser to use the settings of a certain user. This is called in fireFox the profile of the user. In FF (less than or equal to 47) you could do this easily. But now with FF moving to Marionette there is no easy way to configure Capybara to load the browser with a certain profile. I was trying to set the Firefox Profile in env.rb with the following code, but something is missing, it works in cucumber but not with RSpec:
+Sometimes you want to configure the browser to use the settings of a certain user. This is called in fireFox the profile of the user. In FF (less than or equal to 47) you could do this easily. But now with FF moving to Marionette there is no easy way to configure Capybara to load the browser with a certain profile. I was trying to set the Firefox Profile in env.rb with the following code, it works in cucumber but not with spec/example-rspec-capybara.rb using RSpec with Capybara:
 ```
 Capybara.register_driver :geckodriver do |app|
   profile = Selenium::WebDriver::Zipper.zip('/Users/dunban1/Library/Application Support/Firefox/Profiles/s1xdknox.testprofile')
@@ -122,7 +129,7 @@ end
 Capybara.current_driver = :geckodriver
 ```
 
-I was doing this based on a comment by @twalpol in https://github.com/teamcapybara/capybara/issues/1710
+For more information on configuring your tests with a pre-existing FireFox Profile check out the following thread: [Cannot set FireFox Profile to work with Marrionette]( https://groups.google.com/forum/#!searchin/ruby-capybara/FireFox$20profile$20ssl%7Csort:relevance/ruby-capybara/AyAcBX9-lIE/1LpspvPqCwAJ)
 
 and I was guessing at the encoding required by GeckoDriver using this documentation:
 https://github.com/mozilla/geckodriver
@@ -131,7 +138,8 @@ I thought eventually I would be able to set the profile to the following:
 ```
  Capybara.register_driver :firefox do |app|
    profile = Selenium::WebDriver::Firefox::Profile.new
-   profile['general.useragent.override'] = ENV['USERAGENT']
+   profile['assume_untrusted_certificate_issuer'] = false
+   profile['general.useragent.override'] = 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X)'
    profile['browser.startup.homepage_override.mstone'] = 'ignore'
    profile['startup.homepage_welcome_url.additional'] = 'about:blank'
    profile['browser.download.folderList'] = 2
@@ -149,6 +157,13 @@ I thought eventually I would be able to set the profile to the following:
  end
  Capybara.default_driver = :firefox
 ```
+I was doing this based on a comment by @twalpol in [FF w/marionette doesn't work in Capybara](https://github.com/teamcapybara/capybara/issues/1710)
+
 Maybe you could take this work I've done, figure out the answer and message me. In the mean time I'm waiting for Capybara to support this with Marionette.
+
+# Other Notes
+**Poltergeist** - A headless driver which integrates Capybara with PhantomJS. It is truly headless, so doesn't require Xvfb to run on your CI server. It will also detect and report any Javascript errors that happen within the page.
+
+**rino** - cucumber step_definitions can be written using javascript with node `npm install -g cucumber`
 
 edited using : https://pandao.github.io/editor.md/en.html

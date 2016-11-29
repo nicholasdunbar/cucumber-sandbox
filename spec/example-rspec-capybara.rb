@@ -1,14 +1,6 @@
-require 'dot_env'
 require 'capybara/rspec'
 
-#initialize environment variables from the cucumber set-up
-if File.file?('features/support/.env.dev')
-  puts 'Config: .env.dev'
-  DotEnv.get_environment('features/support/.env.dev')
-else
-  puts 'Config: .env'
-  DotEnv.get_environment('features/support/.env')
-end
+#ENV variable is loaded in spec_helper.rb from .env or .env.dev
 puts "WebDriver: "+ENV['BROWSER']
 
 case ENV['BROWSER']
@@ -22,6 +14,7 @@ when "FIREFOX-PROFILE"
   Capybara.register_driver :firefox do |app|
     profile = Selenium::WebDriver::Firefox::Profile.new
     profile['general.useragent.override'] = ENV['USERAGENT']
+    #profile['assume_untrusted_certificate_issuer'] = false
     desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
         marionette: true,
@@ -33,6 +26,7 @@ when "FIREFOX-PROFILE"
   Capybara.default_driver = :firefox
 when "FIREFOX-SAVED-PROFILE"
   #Register driver to use a presaved FireFox Profile 
+  puts "FireFox Profile: "+ENV['FFPROFILEPATH']
   Capybara.register_driver :geckodriver do |app|
     profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
     caps = Selenium::WebDriver::Remote::Capabilities.firefox(

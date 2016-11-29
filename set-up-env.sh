@@ -35,3 +35,4 @@ echo "installing ruby gems from Gemfile"
 bundle install;
 #create dev settings
 cat ./features/support/.env > ./features/support/.env.dev;
+cat ./spec/.env > ./spec/.env.dev;
