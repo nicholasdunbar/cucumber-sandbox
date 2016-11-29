@@ -14,7 +14,7 @@ To run with a custom configuration duplicate features/support/.env.dev to someth
 ##How to run a RSpec script
 Edit .env.dev  
 From the root of the project run  
-`rspec spec/`
+`rspec spec/somescript.rb`
 
 ##Dependancies
 **Ruby** - RSpec, Capybara and Cucumber are all programmed in Ruby
