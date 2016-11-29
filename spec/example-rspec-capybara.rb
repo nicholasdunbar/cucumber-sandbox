@@ -3,6 +3,8 @@ require 'capybara/rspec'
 #ENV variable is loaded in spec_helper.rb from .env or .env.dev
 puts "WebDriver: "+ENV['BROWSER']
 
+##############################CONFIG##############################
+
 case ENV['BROWSER']
 when "CHROME"
   Capybara.default_driver = :selenium
@@ -49,6 +51,8 @@ else
   Capybara.default_driver = :firefox
 end
 Capybara.default_max_wait_time = (ENV['TIMEOUT'] || 20).to_i
+
+##############################TESTS##############################
 
 #go to https://self-signed.badssl.com/ manualy and add an exception
 #then if you are using FireFox go to about:profiles in address bar and get the 
