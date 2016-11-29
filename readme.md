@@ -1,4 +1,4 @@
-# Playing with cucumber, rspec and capybara 
+# Playing with Cucumber, RSpec, Capybara and Marionette
 This is a full set-up of the above technologies since the FF48 switch to Marrionette. You can clone this repository for your own learning and start playing with these libraries. Since Marrionette is still being developed some features may not work.
 
 ## How to set up the environment
