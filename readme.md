@@ -48,7 +48,7 @@ The `it` and `describe` commands are examples of RSpec you can put either Seleni
 
 **Capybara** - A wrapper for web drivers. Use this if you want to use one API that maps to any web driver of your choice. In this case we are using selenium which provides and API to both Chrome and Firefox, but you could replace it with other web drivers. It can also be used for headless testing. Documentation found at http://www.rubydoc.info/github/jnicklas/capybara/master  
 
-**Selenium** - A web driver that works for both Chrome and FireFox. It provides one API for both browsers which in this case is in Ruby but could be in any number of languages. However in this set-up we are wrapping selenium inside of Capybara so we don't need to make direct calls on the selenium API. Selenium has two different paths to automate FireFox and Chrome. It talks to FireFox through Marionette (which depends on GeckoDriver) and it talks to Chrome through ChromeDriver. So why do we use Capybara? Because it allows for more freedom in what drivers we want to use that way we aren't locked in to selenium and because the Capybara library is easier to use than the Selenium one.  
+**Selenium** - A web driver that works for both Chrome and FireFox. It provides one API for both browsers which in this case is in Ruby but could be in any number of languages. In this set-up we are wrapping selenium inside of Capybara (with the exception of `spec/example-rspec.rb` which access the Selenium webdriver directly) so we don't need to make direct calls on the selenium API. Selenium has two different paths to automate FireFox and Chrome. It talks to FireFox through Marionette (which depends on GeckoDriver) and it talks to Chrome through ChromeDriver. So why do we use Capybara? Because it allows for more freedom in what drivers we want to use. This way we aren't locked in to selenium because Capybara has one standard API that is webdriver agnostic. Also some would argue that the Capybara library, as browser automation APIs go, is easier to use than the Selenium one.  
 
 **Marionette** -  A set of tools for automating and testing Gecko-based browsers like Firefox. GeckoDriver and Marionette Server are some of those such tools. Marrionette implements an automation protocol using W3C WebDriver compatibility. Its goal is to replicate what Selenium does but again, only for Gecko-based browsers. We still need Selenium, if we want to be able to talk to multiple browsers. Selenium 3.0 or later, enables support for Marionette by default.  
 
@@ -57,7 +57,9 @@ The `it` and `describe` commands are examples of RSpec you can put either Seleni
 **Marionette Server** - Built into the FireFox browser and receives Marionette commands from the GeckoDriver. 
 
 ### How the components interrelate
-At first I didn't understand how all these dependancies worked together. Here is the gist of it.
+At first I didn't understand how all these dependancies worked together. Here is a good article for further reading:
+http://www.erranderr.com/blog/webdriver-ontology.html  
+However, if that is TLDR then here is the gist of it.  
 
 In this set-up everything is ran in Ruby. Cucumber is the testing framework that allows us to write tests for browser automation. Gherkin and step definitions come with Cucumber. Gherkin scripts are plain english statements found in a file named like the following \*.feature. Step definitions is where the code lives that Gherkin runs. In this set-up, step definitions are written in Ruby but they could be written in most any language. You can find implementations of Cucumber in all sorts of languages. Each Gherkin plain english statement maps to a step definition. Function definitions for the Gherkin scripts are called step definitions and they can be found in features/step_definitions/\*.rb. 
 
@@ -65,27 +67,26 @@ Inside the step definitions we need an API that allows us to send commands to a 
 
 Ruby based Cucumber is built on top of RSpec. Rspec can also be used on it's own for browser automation if you don't need the Gherkin scripts so that the tests are human readable. If you're already using Cucumber you probably only need RSpec to do unit tests with your back-end Ruby scripts.
 
-I hope that clears up what all these tools are and how they work together. Here is a good article for further reading:
-http://www.erranderr.com/blog/webdriver-ontology.html
+I realize that is dense, I hope that clears up what all these tools are and how they work together. If it doesn't read the link on webdriver ontology from above.  
 
 # Anatomy of files and folders 
 
 ## Folders 
 
-**features** - this is where all the Cucumber scripts are located  
-**features/step_definitions** - This is where the code evoked by the Gherkin scripts is located
+**features** - this is where all the Cucumber scripts are located.  
+**features/step_definitions** - This is where the code evoked by the Gherkin scripts is located.  
 **features/support** - This is where the configuration for Cucumber is located.  
-**spec** - this is where the RSpec scripts are located
+**spec** - this is where the RSpec scripts are located.  
 
 ## Cucumber Files 
 
-**features/support/env.rb** - File which is loaded every time Cucumber is ran. It contains global settings 
-**features/support/.env** - Environmental variables that are loaded by env.rb (this is non-standard for Cucumber) This is so that you can create a .env.dev copy of the file which will not be tracked by Git so that you can separate your local environment variables from the production ones you have in your repository.
+**features/support/env.rb** - File which is loaded every time Cucumber is ran. It contains global settings.  
+**features/support/.env** - Environmental variables that are loaded by env.rb (this is non-standard for Cucumber) This is so that you can create a .env.dev copy of the file which will not be tracked by Git so that you can separate your local environment variables from the production ones you have in your repository.  
 
 ## RSpec files 
 
 **spec/spec_helper.rb** - File that is included globally when running any RSpec test.  
-**spec/.env** -  Environmental variables that are loaded by spec_helper.rb (this is non-standard for RSpec) This is so that you can create a .env.dev copy of the file which will not be tracked by Git so that you can separate your local environment variables from the production ones you have in your repository.
+**spec/.env** -  Environmental variables that are loaded by spec_helper.rb (this is non-standard for RSpec) This is so that you can create a .env.dev copy of the file which will not be tracked by Git so that you can separate your local environment variables from the production ones you have in your repository.  
 
 ## Cucumber Examples
 
