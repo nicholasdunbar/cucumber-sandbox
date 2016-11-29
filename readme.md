@@ -35,7 +35,15 @@ From the root of the project run
 
 **Step Definitions** - The functions programmed in ruby using the capybara functions that are called by Gherkin scripts.
 
-**Rspec** - A Ruby defined DSL (Domain Specific Language) and a library that can be used to run behavior driven tests in the browser you can also use it to do unit tests on Ruby code if you are using Ruby in your application.
+**Rspec** - A Ruby defined DSL (Domain Specific Language) and a library that can be used to run behavior driven tests in the browser you can also use it to do unit tests on Ruby code if you are using Ruby in your application. The following would be an example of RSpec:  
+```
+it "check_SEIDE_version" do
+   @base_url = "https://github.com/"
+   @driver.get(@base_url + "/SeleniumHQ/selenium/wiki/SeIDE-Release-Notes")
+   @driver.find_element(:css, "#user-content-280").click
+   @driver.find_element(:xpath, "//div[@id='wiki-body']/div/ul[3]/li").text.should =~ /^[\s\S]*New[\s\S]*$/
+ end
+```
 
 **Capybara** - A wrapper for web drivers. Use this if you want to use one API that maps to any web driver of your choice. In this case we are using selenium which provides and API to both Chrome and Firefox, but you could replace it with other web drivers. It can also be used for headless testing. Documentation found at http://www.rubydoc.info/github/jnicklas/capybara/master  
 
