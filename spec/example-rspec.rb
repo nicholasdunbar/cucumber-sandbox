@@ -35,7 +35,7 @@ describe "SeleniumSpec" do
       @driver = Selenium::WebDriver.for :firefox, desired_capabilities: desired_caps
     when "FIREFOX-SAVED-PROFILE"
       #Does not work before FF47 
-      puts ENV['FFPROFILEPATH']
+      puts "FireFox Profile: "+ENV['FFPROFILEPATH']
       profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
       desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {

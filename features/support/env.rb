@@ -19,7 +19,7 @@ else
   puts 'Using: .env config'
   DotEnv.get_environment("#{$relative_path}/.env")
 end
-puts "Browser: #{ENV['BROWSER']}"
+puts "WebDriver: #{ENV['BROWSER']}"
 puts "Timeout: #{ENV['TIMEOUT']}"
 #make environment available to all scripts globally 
 $ENV = ENV;
@@ -53,6 +53,7 @@ $ENV = ENV;
       profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
       caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
+          marionette: true,
           firefox_options: {profile: profile},
         }
       )

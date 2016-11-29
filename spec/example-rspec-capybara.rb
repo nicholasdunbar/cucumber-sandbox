@@ -1,4 +1,7 @@
+require 'capybara'
+require 'capybara/dsl'
 require 'capybara/rspec'
+require 'selenium-webdriver'
 
 #ENV variable is loaded in spec_helper.rb from .env or .env.dev
 puts "WebDriver: "+ENV['BROWSER']
@@ -15,6 +18,7 @@ when "FIREFOX-PROFILE"
   #Register driver to use a hard coded FireFox Profile 
   Capybara.register_driver :firefox do |app|
     profile = Selenium::WebDriver::Firefox::Profile.new
+    #example of a hardcoded profile value
     profile['general.useragent.override'] = ENV['USERAGENT']
     #profile['assume_untrusted_certificate_issuer'] = false
     desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
@@ -27,12 +31,13 @@ when "FIREFOX-PROFILE"
   end
   Capybara.default_driver = :firefox
 when "FIREFOX-SAVED-PROFILE"
-  #Register driver to use a presaved FireFox Profile 
+  #Register driver to use a presaved FireFox Profile (Does not work before FF47)
   puts "FireFox Profile: "+ENV['FFPROFILEPATH']
   Capybara.register_driver :geckodriver do |app|
     profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
     caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
+        marionette: true,
         firefox_options: {profile: profile},
       }
     )
