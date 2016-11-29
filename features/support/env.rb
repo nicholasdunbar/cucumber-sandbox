@@ -35,6 +35,7 @@ $ENV = ENV;
     #Register driver to use a hard coded FireFox Profile 
     Capybara.register_driver :firefox do |app|
       profile = Selenium::WebDriver::Firefox::Profile.new
+      #example of setting a profile
       profile['general.useragent.override'] = ENV['USERAGENT']
       desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
@@ -46,7 +47,8 @@ $ENV = ENV;
     end
     Capybara.default_driver = :firefox
   when "FIREFOX-SAVED-PROFILE"
-    #Register driver to use a presaved FireFox Profile 
+    #Register driver to use a presaved FireFox Profile (Does not work before FF47)
+    puts "FireFox Profile: "+ENV['FFPROFILEPATH']
     Capybara.register_driver :geckodriver do |app|
       profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
       caps = Selenium::WebDriver::Remote::Capabilities.firefox(
