@@ -4,7 +4,7 @@ This is a full set-up of the above technologies since the FF48 switch to Marrion
 ## How to set up the environment
 run the bash script `set-up-env.sh`
 
-## How to run a cucumber script
+## How to run a Cucumber script
 Edit .env.dev  
 From the root of the project run  
 `cucumber features/`  
@@ -23,19 +23,19 @@ From the root of the project run
 
 **WebKit** - not yet supported in this project
 
-**Ruby** - RSpec, Capybara and Cucumber are all programmed in Ruby
+**Ruby** - RSpec, Capybara and Cucumber are all programmed in Ruby in this example, but you can get them in different languages.
 
-**RVM** - Makes sure this ruby install will not mess with your other installs
+**RVM** - Makes sure this Ruby install will not mess with your other installs
 
 **Homebrew** - the `set-up-env.sh` script requires brew which only works on OSX but can be replaced easily by using another package manager 
 
 **Cucumber** - A Ruby gem that allows mapping Ruby functions to plain text in a "features" file which will run behavior driven tests in the browser.
 
-**Gherkin** - The .feature files that cucumber uses which allows plain english grammars to be mapped to functions in step_definitions/
+**Gherkin** - The .feature files that Cucumber uses which allows plain english grammars to be mapped to functions in step_definitions/
 
-**Step Definitions** - The functions programmed in ruby using the capybara functions that are called by Gherkin scripts.
+**Step Definitions** - The functions programmed in Ruby using the capybara functions that are called by Gherkin scripts.
 
-**Rspec** - A Ruby defined DSL (Domain Specific Language) and a library that can be used to run behavior driven tests in the browser you can also use it to do unit tests on Ruby code if you are using Ruby in your application. The following would be an example of RSpec:  
+**Rspec** - A Ruby defined DSL (Domain Specific Language) and a library that can be used to run behavior driven tests in the browser you can also use it to do unit tests on Ruby code if you are using Ruby in your application. The following would be an example of RSpec with Selenium being used as the API to the webdriver written in Ruby:  
 ```
 it "check_SEIDE_version" do
    @base_url = "https://github.com/"
@@ -44,10 +44,11 @@ it "check_SEIDE_version" do
    @driver.find_element(:xpath, "//div[@id='wiki-body']/div/ul[3]/li").text.should =~ /^[\s\S]*New[\s\S]*$/
  end
 ```
+The `it` and `describe` commands are examples of RSpec you can put either Selenium or Capybara inside of those statements to automate the browser.
 
 **Capybara** - A wrapper for web drivers. Use this if you want to use one API that maps to any web driver of your choice. In this case we are using selenium which provides and API to both Chrome and Firefox, but you could replace it with other web drivers. It can also be used for headless testing. Documentation found at http://www.rubydoc.info/github/jnicklas/capybara/master  
 
-**Selenium** - A web driver that works for both chrome and firefox. It provides one API for both browsers which in this case is in Ruby but could be in any number of languages. However in this set-up we are wrapping selenium inside of Capybara so we don't need to make direct calls on the selenium API. Selenium has two different paths to automate FireFox and Chrome. It talks to FireFox through Marionette (which depends on GeckoDriver) and it talks to Chrome through ChromeDriver. So why do we use Capybara? Because it allows for more freedom in what drivers we want to use that way we aren't locked in to selenium and because the Capybara library is easier to use than the Selenium one.  
+**Selenium** - A web driver that works for both Chrome and FireFox. It provides one API for both browsers which in this case is in Ruby but could be in any number of languages. However in this set-up we are wrapping selenium inside of Capybara so we don't need to make direct calls on the selenium API. Selenium has two different paths to automate FireFox and Chrome. It talks to FireFox through Marionette (which depends on GeckoDriver) and it talks to Chrome through ChromeDriver. So why do we use Capybara? Because it allows for more freedom in what drivers we want to use that way we aren't locked in to selenium and because the Capybara library is easier to use than the Selenium one.  
 
 **Marionette** -  A set of tools for automating and testing Gecko-based browsers like Firefox. GeckoDriver and Marionette Server are some of those such tools. Marrionette implements an automation protocol using W3C WebDriver compatibility. Its goal is to replicate what Selenium does but again, only for Gecko-based browsers. We still need Selenium, if we want to be able to talk to multiple browsers. Selenium 3.0 or later, enables support for Marionette by default.  
 
@@ -58,7 +59,7 @@ it "check_SEIDE_version" do
 ### How the components interrelate
 At first I didn't understand how all these dependancies worked together. Here is the gist of it.
 
-In this set-up everything is ran in Ruby. Cucumber is the testing framework that allows us to write tests for browser automation. Gherkin and step definitions come with Cucumber. Gherkin scripts are plain english statements found in a file named like the following \*.feature. Step definitions is where the code lives that Gherkin runs. In this set-up, step definitions are written in Ruby but they could be written in most any language. You can find implementations of cucumber in all sorts of languages. Each Gherkin plain english statement maps to a step definition. Function definitions for the Gherkin scripts are called step definitions and they can be found in features/step_definitions/\*.rb. 
+In this set-up everything is ran in Ruby. Cucumber is the testing framework that allows us to write tests for browser automation. Gherkin and step definitions come with Cucumber. Gherkin scripts are plain english statements found in a file named like the following \*.feature. Step definitions is where the code lives that Gherkin runs. In this set-up, step definitions are written in Ruby but they could be written in most any language. You can find implementations of Cucumber in all sorts of languages. Each Gherkin plain english statement maps to a step definition. Function definitions for the Gherkin scripts are called step definitions and they can be found in features/step_definitions/\*.rb. 
 
 Inside the step definitions we need an API that allows us to send commands to a browser. We do this using Capybara which is a set of standard commands for browser automation, like click here or fill out this field, etc. It is a wrapper for a web driver. Web drivers are browser specific APIs that allow us to send commands to the browser. Capybara can be configured to use a number of web drivers. There are all sorts of web drivers out there, in this situation we are using the two following web drivers: GeckoDriver (which is also called Marionette) and ChromeDriver. Marionette allows us to control FireFox and ChromeDriver allows us to control Chrome. 
 
@@ -71,15 +72,15 @@ http://www.erranderr.com/blog/webdriver-ontology.html
 
 ## Folders 
 
-**features** - this is where all the cucumber scripts are located  
+**features** - this is where all the Cucumber scripts are located  
 **features/step_definitions** - This is where the code evoked by the Gherkin scripts is located
 **features/support** - This is where the configuration for Cucumber is located.  
 **spec** - this is where the RSpec scripts are located
 
 ## Cucumber Files 
 
-**features/support/env.rb** - File which is loaded every time cucumber is ran. It contains global settings 
-**features/support/.env** - Environmental variables that are loaded by env.rb (this is non-standard for cucumber) This is so that you can create a .env.dev copy of the file which will not be tracked by Git so that you can separate your local environment variables from the production ones you have in your repository.
+**features/support/env.rb** - File which is loaded every time Cucumber is ran. It contains global settings 
+**features/support/.env** - Environmental variables that are loaded by env.rb (this is non-standard for Cucumber) This is so that you can create a .env.dev copy of the file which will not be tracked by Git so that you can separate your local environment variables from the production ones you have in your repository.
 
 ## RSpec files 
 
@@ -180,6 +181,6 @@ Maybe you could take this work I've done, figure out the answer and message me. 
 # Other Notes
 **Poltergeist** - A headless driver which integrates Capybara with PhantomJS. It is truly headless, so doesn't require Xvfb to run on your CI server. It will also detect and report any Javascript errors that happen within the page.
 
-**rino** - cucumber step_definitions can be written using javascript with node `npm install -g cucumber`
+**rino** - Cucumber step_definitions can be written using javascript with node `npm install -g cucumber`
 
 edited using : https://pandao.github.io/editor.md/en.html
