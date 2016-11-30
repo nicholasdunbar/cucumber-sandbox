@@ -54,7 +54,7 @@ $ENV = ENV;
       caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
           marionette: true,
-          firefox_options: {profile: profile},
+          firefox_options: {profile: profile}
         }
       )
       
