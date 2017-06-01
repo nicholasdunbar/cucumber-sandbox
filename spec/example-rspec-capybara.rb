@@ -14,26 +14,26 @@ when "CHROME"
   Capybara.register_driver :selenium do |app|
     Capybara::Selenium::Driver.new app, browser: :chrome
   end
-when "FIREFOX-PROFILE"
+when "FIREFOX-HARDCODED-PROFILE"
   #Register driver to use a hard coded FireFox Profile 
-  Capybara.register_driver :firefox do |app|
+  Capybara.register_driver :selenium do |app|
     profile = Selenium::WebDriver::Firefox::Profile.new
     #example of a hardcoded profile value
     profile['general.useragent.override'] = ENV['USERAGENT']
-    #profile['assume_untrusted_certificate_issuer'] = false
     desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
         marionette: true,
+        accept_insecure_certs: true,
         firefox_options: { profile: profile.as_json.values.first }
       }
     )
     Capybara::Selenium::Driver.new(app, :browser => :firefox, desired_capabilities: desired_caps)
   end
-  Capybara.default_driver = :firefox
+  Capybara.default_driver = :selenium
 when "FIREFOX-SAVED-PROFILE"
   #Register driver to use a presaved FireFox Profile (Does not work before FF47)
   puts "FireFox Profile: "+ENV['FFPROFILEPATH']
-  Capybara.register_driver :geckodriver do |app|
+  Capybara.register_driver :selenium do |app|
     profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
     caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
@@ -48,12 +48,19 @@ when "FIREFOX-SAVED-PROFILE"
       desired_capabilities: caps
     )
   end
-  Capybara.current_driver = :geckodriver
-else
-  Capybara.register_driver :firefox do |app|
-    Capybara::Selenium::Driver.new app, browser: :firefox
+  Capybara.current_driver = :selenium
+when "FIREFOX"
+  #works <FF48 && >=FF48
+  Capybara.register_driver :selenium do |app|
+    Capybara::Selenium::Driver.new(app, browser: :firefox)
   end
-  Capybara.default_driver = :firefox
+  Capybara.default_driver = :selenium
+else
+  #default to Firefox
+  Capybara.register_driver :selenium do |app|
+    Capybara::Selenium::Driver.new(app, browser: :firefox)
+  end
+  Capybara.default_driver = :selenium
 end
 Capybara.default_max_wait_time = (ENV['TIMEOUT'] || 20).to_i
 
@@ -66,7 +73,7 @@ Capybara.default_max_wait_time = (ENV['TIMEOUT'] || 20).to_i
 describe 'EXPIRED SSL CERT TEST', :js => true, :type => :feature do
   it "test ssl cert" do
     visit 'https://self-signed.badssl.com/'
-    page.save_screenshot('screenshot.png')
+    # page.save_screenshot('screenshot.png')
     sleep 30
   end
 end

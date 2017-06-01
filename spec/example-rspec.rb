@@ -20,19 +20,24 @@ describe "SeleniumSpec" do
     case ENV['BROWSER']
     when "CHROME"
       @driver = Selenium::WebDriver.for :chrome, :switches => %w[--ignore-certificate-errors --disable-popup-blocking --disable-translate]
-    when "FIREFOX-PROFILE"
-      #Does not work before FF48 - FF47 was the last FF version before they switched to Marrionette.
+    when "FIREFOX-HARDCODED-PROFILE"
+      #Does not work before FF48 (FF47 was the last FF version before Mozilla switched to Marrionette)
       #documentation: http://www.rubydoc.info/gems/selenium-webdriver/0.0.28/Selenium/WebDriver/Firefox/Profile
       profile = Selenium::WebDriver::Firefox::Profile.new
       #example of a hardcoded profile value
       profile['general.useragent.override'] = ENV['USERAGENT']
+      
       desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
           marionette: true,
-          firefox_options: { profile: profile.as_json.values.first }
+          accept_insecure_certs: true
         }
       )
-      @driver = Selenium::WebDriver.for :firefox, desired_capabilities: desired_caps
+      @driver = Selenium::WebDriver.for :firefox, :profile => profile, desired_capabilities: desired_caps
+      
+      # desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox( {accept_insecure_certs: true})
+      # @driver = Selenium::WebDriver.for :firefox, desired_capabilities: desired_caps
+
     when "FIREFOX-SAVED-PROFILE"
       #Does not work before FF47 
       puts "FireFox Profile: "+ENV['FFPROFILEPATH']
@@ -44,7 +49,11 @@ describe "SeleniumSpec" do
         }
       )
       @driver = Selenium::WebDriver.for :firefox, desired_capabilities: desired_caps
+    when "FIREFOX-SAVED-PROFILE"
+      #works <FF48 && >=FF48
+      @driver = Selenium::WebDriver.for :firefox
     else
+      #default to Firefox
       #works <FF48 && >=FF48
       @driver = Selenium::WebDriver.for :firefox
     end
