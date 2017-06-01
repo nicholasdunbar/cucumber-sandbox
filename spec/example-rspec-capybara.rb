@@ -51,6 +51,7 @@ when "FIREFOX-SAVED-PROFILE"
     caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
         marionette: true,
+        accept_insecure_certs: true,
         firefox_options: {profile: profile},
       }
     )
