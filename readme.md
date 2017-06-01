@@ -1,6 +1,8 @@
 # Sandbox for Cucumber, RSpec, Capybara and Marionette
 This is a full set-up of the above technologies since the FF48 switch to Marrionette. You can clone this repository for your own learning and start playing with these libraries. Since Marrionette is still being developed some features may not work.
 
+Tested on : Mac OSX 10.12.5 Sierra  
+
 ## How to set up the environment
 run the bash script `set-up-env.sh`
 
