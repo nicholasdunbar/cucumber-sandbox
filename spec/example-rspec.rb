@@ -37,7 +37,7 @@ describe "SeleniumSpec" do
       desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
           marionette: true,
-          accept_insecure_certs: true
+          accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
         }
       )
       @driver = Selenium::WebDriver.for :firefox, :profile => profile, desired_capabilities: desired_caps
@@ -53,6 +53,7 @@ describe "SeleniumSpec" do
       desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
           marionette: true,
+          accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true"),
           firefox_options: {profile: profile},
         }
       )
@@ -66,7 +67,7 @@ describe "SeleniumSpec" do
       @driver = Selenium::WebDriver.for :firefox
     end
     @accept_next_alert = true
-    @driver.manage.timeouts.implicit_wait = 30
+    @driver.manage.timeouts.implicit_wait = (ENV['TIMEOUT'] || 20).to_i
     @verification_errors = []
   end
   
@@ -84,8 +85,8 @@ describe "SeleniumSpec" do
   # end
   
   it "check_SSL_certs" do
-    # @base_url = "https://self-signed.badssl.com/"
-    @base_url = "http://localhost:5000/index.html"
+    #test that self-signed exception is working
+    @base_url = "https://self-signed.badssl.com/"
     @driver.get(@base_url)
     @driver.save_screenshot('screenshots/rsec+selenium.png')
     sleep 5

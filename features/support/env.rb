@@ -40,6 +40,7 @@ $ENV = ENV;
       desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
           marionette: true,
+          accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true"),
           firefox_options: { profile: profile.as_json.values.first }
         }
       )
@@ -47,13 +48,14 @@ $ENV = ENV;
     end
     Capybara.default_driver = :firefox
   when "FIREFOX-SAVED-PROFILE"
-    #Register driver to use a presaved FireFox Profile (Does not work before FF47)
+    #Register driver to use a pre-saved FireFox Profile (Does not work before FF47)
     puts "FireFox Profile: "+ENV['FFPROFILEPATH']
     Capybara.register_driver :geckodriver do |app|
       profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
       caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
           marionette: true,
+          accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true"),
           firefox_options: {profile: profile}
         }
       )

@@ -33,7 +33,7 @@ when "FIREFOX-HARDCODED-PROFILE"
     desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
         marionette: true,
-        accept_insecure_certs: true
+        accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true" || false)
       }
     )
     Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile, desired_capabilities: desired_caps)
@@ -51,7 +51,7 @@ when "FIREFOX-SAVED-PROFILE"
     caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
         marionette: true,
-        accept_insecure_certs: true,
+        accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true" || false),
         firefox_options: {profile: profile},
       }
     )
@@ -86,6 +86,7 @@ Capybara.default_max_wait_time = (ENV['TIMEOUT'] || 20).to_i
 #run test to see if the exception you
 describe 'EXPIRED SSL CERT TEST', :js => true, :type => :feature do
   it "test ssl cert" do
+    #test if ssl cert exception is working 
     visit 'https://self-signed.badssl.com/'
     page.save_screenshot('screenshots/rspec+capybara+selenium.png')
     sleep 5
