@@ -31,26 +31,31 @@ $ENV = ENV;
     Capybara.register_driver :selenium do |app|
       Capybara::Selenium::Driver.new app, browser: :chrome
     end
-  when "FIREFOX-PROFILE"
+  when "FIREFOX-HARDCODED-PROFILE"
     #Register driver to use a hard coded FireFox Profile 
     Capybara.register_driver :firefox do |app|
       profile = Selenium::WebDriver::Firefox::Profile.new
       #example of setting a profile
       profile['general.useragent.override'] = ENV['USERAGENT']
+      #to make sure downloaded files go to the downloads directory
+      profile['browser.download.folderList'] = 2
+      profile['browser.download.manager.showWhenStarting'] = false
+      profile['browser.download.dir'] = File.expand_path("../../../", __FILE__)+"/downloads"
+      profile['browser.helperApps.neverAsk.saveToDisk'] = "application/pdf"
+      profile['plugin.disable_full_page_plugin_for_types'] = "application/pdf"
       desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
           marionette: true,
-          accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true"),
-          firefox_options: { profile: profile.as_json.values.first }
+          accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
         }
       )
-      Capybara::Selenium::Driver.new(app, :browser => :firefox, desired_capabilities: desired_caps)
+      Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile, desired_capabilities: desired_caps)
     end
     Capybara.default_driver = :firefox
   when "FIREFOX-SAVED-PROFILE"
     #Register driver to use a pre-saved FireFox Profile (Does not work before FF47)
     puts "FireFox Profile: "+ENV['FFPROFILEPATH']
-    Capybara.register_driver :geckodriver do |app|
+    Capybara.register_driver :selenium do |app|
       profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
       caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
@@ -66,12 +71,12 @@ $ENV = ENV;
         desired_capabilities: caps
       )
     end
-    Capybara.current_driver = :geckodriver
+    Capybara.current_driver = :selenium
   else
-    Capybara.register_driver :firefox do |app|
+    Capybara.register_driver :selenium do |app|
       Capybara::Selenium::Driver.new app, browser: :firefox
     end
-    Capybara.default_driver = :firefox
+    Capybara.default_driver = :selenium
   end
 Capybara.default_max_wait_time = (ENV['TIMEOUT'] || 20).to_i
 
