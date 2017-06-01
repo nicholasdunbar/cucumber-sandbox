@@ -129,67 +129,10 @@ add methods to the CustomWorld class in features/support/env.rb
 To stall a test so you can see what is going on  
 `sleep 10`
 
-# Failures
-
-## Attempts to configure the browser
-
-Sometimes you want to configure the browser to use the settings of a certain user. This is called the FireFox Profile. In FF (less than or equal to 47) you could do this easily. But now with FF moving to Marionette it is difficult to configure Capybara to load the browser with a certain profile because all the old examples on the web and it doesn't work in all contexts. I was trying to set the Firefox Profile in env.rb with the following code, it works in Cucumber `cucumber features/test.features` and `rspec spec/example-rspec.rb` (Pure Selenium) but not with spec/example-rspec-capybara.rb using RSpec with Capybara:
-```
-Capybara.register_driver :geckodriver do |app|
-  profile = Selenium::WebDriver::Zipper.zip('/Users/dunban1/Library/Application Support/Firefox/Profiles/s1xdknox.testprofile')
-  caps = Selenium::WebDriver::Remote::Capabilities.firefox(
-    {
-      firefox_options: {profile: profile},
-    }
-  )
-  
-  Capybara::Selenium::Driver.new(
-    app,
-    browser: :firefox,
-    desired_capabilities: caps
-  )
-end
-Capybara.current_driver = :geckodriver
-```
 
 For more information on configuring your tests with a pre-existing FireFox Profile check out the following thread: [Cannot set FireFox Profile to work with Marrionette]( https://groups.google.com/forum/#!searchin/ruby-capybara/FireFox$20profile$20ssl%7Csort:relevance/ruby-capybara/AyAcBX9-lIE/1LpspvPqCwAJ)  
 
-So the question is why does this work in Cucumber+Capybara but not with RSpec+Capybara? 
-I checked to make sure the same selenium code was being run and it was 3.0.3 in both cases.
-I changed the FireFox default profile to a different one than testprofile and that is the one that loaded...so what ever setting we are adding in Capybara for the usage of a specific FireFox profile is not working. What is perplexing is that even when testprofile is set to default it still does not know that the url has a ssl cert exception stored for it. When I checked the selected profile in the cucumber test, I got the same thing the profile was not being selected. Somehow cucumber is setting some sort of pre-condition that is making selenium ignore SSL errors. 
 
-To track the progress of support for geckodriver profiles  
-[To track the progress of support for geckodriver profiles](https://github.com/teamcapybara/capybara/issues/1710)  
-
-and I was guessing at the encoding required by GeckoDriver using this documentation:
-https://github.com/mozilla/geckodriver
-
-I thought eventually I would be able to set the profile to the following:
-```
- Capybara.register_driver :firefox do |app|
-   profile = Selenium::WebDriver::Firefox::Profile.new
-   profile['assume_untrusted_certificate_issuer'] = false
-   profile['general.useragent.override'] = 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X)'
-   profile['browser.startup.homepage_override.mstone'] = 'ignore'
-   profile['startup.homepage_welcome_url.additional'] = 'about:blank'
-   profile['browser.download.folderList'] = 2
-   profile['browser.download.manager.showWhenStarting'] = false
-   profile['browser.download.dir'] = File.expand_path("../../../", __FILE__)+"/temp/downloads"
-   profile['browser.helperApps.neverAsk.saveToDisk'] = "application/pdf"
-   profile['plugin.disable_full_page_plugin_for_types'] = "application/pdf"
-   desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
-     {
-       marionette: true,
-       firefox_options: { profile: profile.as_json.values.first }
-     }
-   )
-   Capybara::Selenium::Driver.new(app, :browser => :firefox, desired_capabilities: desired_caps)
- end
- Capybara.default_driver = :firefox
-```
-I was doing this based on a comment by @twalpol in [FF w/marionette doesn't work in Capybara](https://github.com/teamcapybara/capybara/issues/1710)
-
-Maybe you could take this work I've done, figure out the answer and message me. In the mean time I'm waiting for Capybara to support this with Marionette.
 
 # Other Notes
 **Poltergeist** - A headless driver which integrates Capybara with PhantomJS. It is truly headless, so doesn't require Xvfb to run on your CI server. It will also detect and report any Javascript errors that happen within the page.

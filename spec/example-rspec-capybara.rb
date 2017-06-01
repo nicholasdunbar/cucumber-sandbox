@@ -18,20 +18,33 @@ when "FIREFOX-HARDCODED-PROFILE"
   #Register driver to use a hard coded FireFox Profile 
   Capybara.register_driver :selenium do |app|
     profile = Selenium::WebDriver::Firefox::Profile.new
+    #this allows you to encode values into a temporary profile that exists only durring testing. 
+    #you can look up each of the values at the following URL:
+    #documentation: http://www.rubydoc.info/gems/selenium-webdriver/0.0.28/Selenium/WebDriver/Firefox/Profile
+    #Does not work before FF48 (FF47 was the last FF version before Mozilla switched to Marrionette)
     #example of a hardcoded profile value
     profile['general.useragent.override'] = ENV['USERAGENT']
+    #to make sure downloaded files go to the downloads directory
+    profile['browser.download.folderList'] = 2
+    profile['browser.download.manager.showWhenStarting'] = false
+    profile['browser.download.dir'] = File.expand_path("../../../", __FILE__)+"/downloads"
+    profile['browser.helperApps.neverAsk.saveToDisk'] = "application/pdf"
+    profile['plugin.disable_full_page_plugin_for_types'] = "application/pdf"
     desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
         marionette: true,
-        accept_insecure_certs: true,
-        firefox_options: { profile: profile.as_json.values.first }
+        accept_insecure_certs: true
       }
     )
-    Capybara::Selenium::Driver.new(app, :browser => :firefox, desired_capabilities: desired_caps)
+    Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile, desired_capabilities: desired_caps)
   end
   Capybara.default_driver = :selenium
 when "FIREFOX-SAVED-PROFILE"
-  #Register driver to use a presaved FireFox Profile (Does not work before FF47)
+  #this uses a previously created profile in FF. You can look at the paths for each profile by typing
+  #in the URL bar about:profiles and then copy the path of the profile into your .env or .env.dev files
+  #this allows you to set certain things in the browser like SSL exceptions that you want to be applied 
+  #durring your tests. 
+  #Does not work before FF47 
   puts "FireFox Profile: "+ENV['FFPROFILEPATH']
   Capybara.register_driver :selenium do |app|
     profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
@@ -73,7 +86,7 @@ Capybara.default_max_wait_time = (ENV['TIMEOUT'] || 20).to_i
 describe 'EXPIRED SSL CERT TEST', :js => true, :type => :feature do
   it "test ssl cert" do
     visit 'https://self-signed.badssl.com/'
-    # page.save_screenshot('screenshot.png')
-    sleep 30
+    page.save_screenshot('screenshots/rspec+capybara+selenium.png')
+    sleep 5
   end
 end
