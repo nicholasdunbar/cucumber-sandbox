@@ -86,6 +86,7 @@ I realize that is dense, I hope that clears up what all these tools are and how 
 **features/step_definitions** - This is where the code evoked by the Gherkin scripts is located.  
 **features/support** - This is where the configuration for Cucumber is located.  
 **spec** - this is where the RSpec scripts are located.  
+**screenshots** - this is where the screenshots from the automated scripts are dumped.  
 
 ## Cucumber Files 
 
