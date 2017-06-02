@@ -10,10 +10,15 @@ puts "WebDriver: "+ENV['BROWSER']
 
 case ENV['BROWSER']
 when "CHROME"
-  Capybara.default_driver = :selenium
-  Capybara.register_driver :selenium do |app|
-    Capybara::Selenium::Driver.new app, browser: :chrome
+  if (ENV['ACCEPTALLCERTS'] == "true")
+    addswitch = %w[--ignore-certificate-errors --disable-popup-blocking --disable-translate]
+  else 
+    addswitch = %w[--disable-popup-blocking --disable-translate]
   end
+  Capybara.register_driver :selenium do |app|
+    Capybara::Selenium::Driver.new(app, browser: :chrome, :switches => addswitch)
+  end
+  Capybara.default_driver = :selenium
 when "FIREFOX-HARDCODED-PROFILE"
   #Register driver to use a hard coded FireFox Profile 
   Capybara.register_driver :selenium do |app|
@@ -24,7 +29,7 @@ when "FIREFOX-HARDCODED-PROFILE"
     #Does not work before FF48 (FF47 was the last FF version before Mozilla switched to Marrionette)
     #example of a hardcoded profile value
     profile['general.useragent.override'] = ENV['USERAGENT']
-    #to make sure downloaded files go to the downloads directory
+    #to make sure downloaded files like PDFs go to the downloads directory
     profile['browser.download.folderList'] = 2
     profile['browser.download.manager.showWhenStarting'] = false
     profile['browser.download.dir'] = File.expand_path("../../../", __FILE__)+"/downloads"
@@ -33,7 +38,7 @@ when "FIREFOX-HARDCODED-PROFILE"
     desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
         marionette: true,
-        accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true" || false)
+        accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
       }
     )
     Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile, desired_capabilities: desired_caps)
@@ -51,7 +56,7 @@ when "FIREFOX-SAVED-PROFILE"
     caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
         marionette: true,
-        accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true" || false),
+        accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true"),
         firefox_options: {profile: profile},
       }
     )
@@ -64,13 +69,24 @@ when "FIREFOX-SAVED-PROFILE"
   end
   Capybara.current_driver = :selenium
 when "FIREFOX"
-  #works <FF48 && >=FF48
+  #works >=FF48
+  desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
+    {
+      marionette: true,
+      accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
+    }
+  )
   Capybara.register_driver :selenium do |app|
-    Capybara::Selenium::Driver.new(app, browser: :firefox)
+    Capybara::Selenium::Driver.new(
+      app, 
+      browser: :firefox,
+      desired_capabilities: caps
+    )
   end
   Capybara.default_driver = :selenium
 else
   #default to Firefox
+  #works <FF48 && >=FF48
   Capybara.register_driver :selenium do |app|
     Capybara::Selenium::Driver.new(app, browser: :firefox)
   end

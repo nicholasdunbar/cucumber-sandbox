@@ -19,7 +19,12 @@ describe "SeleniumSpec" do
   before(:each) do
     case ENV['BROWSER']
     when "CHROME"
-      @driver = Selenium::WebDriver.for :chrome, :switches => %w[--ignore-certificate-errors --disable-popup-blocking --disable-translate]
+      if (ENV['ACCEPTALLCERTS'] == "true")
+        addswitch = %w[--ignore-certificate-errors --disable-popup-blocking --disable-translate]
+      else 
+        addswitch = %w[--disable-popup-blocking --disable-translate]
+      end
+      @driver = Selenium::WebDriver.for :chrome, :switches => addswitch
     when "FIREFOX-HARDCODED-PROFILE"
       profile = Selenium::WebDriver::Firefox::Profile.new
       #this allows you to encode values into a temporary profile that exists only durring testing. 
@@ -59,8 +64,14 @@ describe "SeleniumSpec" do
       )
       @driver = Selenium::WebDriver.for :firefox, desired_capabilities: desired_caps
     when "FIREFOX"
-      #works <FF48 && >=FF48
-      @driver = Selenium::WebDriver.for :firefox
+      #works >=FF48
+      desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
+        {
+          marionette: true,
+          accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
+        }
+      )
+      @driver = Selenium::WebDriver.for :firefox, desired_capabilities: desired_caps
     else
       #default to Firefox
       #works <FF48 && >=FF48

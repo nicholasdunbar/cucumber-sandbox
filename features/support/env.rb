@@ -27,10 +27,15 @@ $ENV = ENV;
 
   case $ENV['BROWSER']
   when "CHROME"
-    Capybara.default_driver = :selenium
-    Capybara.register_driver :selenium do |app|
-      Capybara::Selenium::Driver.new app, browser: :chrome
+    if (ENV['ACCEPTALLCERTS'] == "true")
+      addswitch = %w[--ignore-certificate-errors --disable-popup-blocking --disable-translate]
+    else 
+      addswitch = %w[--disable-popup-blocking --disable-translate]
     end
+    Capybara.register_driver :selenium do |app|
+      Capybara::Selenium::Driver.new(app, browser: :chrome, :switches => addswitch)
+    end
+    Capybara.default_driver = :selenium
   when "FIREFOX-HARDCODED-PROFILE"
     #Register driver to use a hard coded FireFox Profile 
     Capybara.register_driver :firefox do |app|
