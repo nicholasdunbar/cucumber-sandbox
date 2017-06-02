@@ -1,6 +1,6 @@
 Feature: This is a hello world 
-  In order to start learning RSpec and Cucumber
-  This is a hellow world example
+  This is a hello world example 
+  It shows using RSpec only as a unit test (not controlling the browser)
   I want a greeter to say Hello
   
 Scenario: greeter says hello
