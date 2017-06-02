@@ -14,6 +14,15 @@ rvm gemset create "$rubyGemset";
 gem list | grep -E "^bundler$" >/dev/null 2>&1 || { echo >&2 "Attempting to install bundler"; gem install bundler; };
 gem list | grep -E "^bundler$" >/dev/null 2>&1 || { echo >&2 "bundler installation failure"; exit 1; };
 
+#check to see if Homebrew (brew) is installed
+isBrew=$(brew -v | xargs -0 | grep -E 'Homebrew');
+if [[ -z $isBrew ]]; then
+  echo "Homebrew is not installed. Attempting to install. If install fails check https://brew.sh";
+  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)";
+else
+  echo "Homebrew https://brew.sh is already installed";
+fi
+
 #install Marionette for Firefox
 isGeckodriver=$(brew list | xargs -0 | grep -E 'geckodriver');
 if [[ -z $isGeckodriver ]]; then
