@@ -28,9 +28,9 @@ or for rspec+selenium
 ## Dependancies
 **Chrome** - This sandbox supports the Chrome browser
 
-**FireFox** - This sandbox supports the FireFox browser only with the following configurations: RSpec+Selenium and Cucumber+Capybara. It does not support FireFox with RSpec+Capybara (this is due to the changes since FF48 when Marrionette and GeckoDriver was introduced this project is here to try and figure out all the new configurations needed for FireFox).
+**FireFox** - This sandbox supports the FireFox browser
 
-**WebKit** - not yet supported in this project
+**WebKit** - This is not yet supported in this project
 
 **Ruby** - RSpec, Capybara and Cucumber are all programmed in Ruby in this example, but you can get them in different languages.
 
