@@ -1,3 +1,4 @@
 features/support/.env.*
 spec/.env.*
 screenshots/*.png
+downloads/*
