@@ -69,7 +69,6 @@ $ENV = ENV;
           firefox_options: {profile: profile}
         }
       )
-      
       Capybara::Selenium::Driver.new(
         app,
         browser: :firefox,
@@ -79,7 +78,17 @@ $ENV = ENV;
     Capybara.current_driver = :selenium
   else
     Capybara.register_driver :selenium do |app|
-      Capybara::Selenium::Driver.new app, browser: :firefox
+      caps = Selenium::WebDriver::Remote::Capabilities.firefox(
+        {
+          marionette: true,
+          accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
+        }
+      )
+      Capybara::Selenium::Driver.new(
+        app,
+        browser: :firefox,
+        desired_capabilities: caps
+      )
     end
     Capybara.default_driver = :selenium
   end
