@@ -88,18 +88,20 @@ describe "SeleniumSpec" do
   end
   
   ##############################TESTS##############################
-  # it "check_SEIDE_version" do
-  #   @base_url = "https://github.com/"
-  #   @driver.get(@base_url + "/SeleniumHQ/selenium/wiki/SeIDE-Release-Notes")
-  #   @driver.find_element(:css, "#user-content-280").click
-  #   @driver.find_element(:xpath, "//div[@id='wiki-body']/div/ul[3]/li").text.should =~ /^[\s\S]*New[\s\S]*$/
-  # end
+  it "check_SEIDE_version" do
+    @base_url = "https://github.com/"
+    @driver.get(@base_url + "/SeleniumHQ/selenium/wiki/SeIDE-Release-Notes")
+    @driver.find_element(:css, "#user-content-280").click
+    @driver.find_element(:xpath, "//div[@id='wiki-body']/div/ul[3]/li").text.should =~ /^[\s\S]*New[\s\S]*$/
+    @driver.save_screenshot('screenshots/rsec+selenium+check+seide.png')
+    sleep 5
+  end
   
   it "check_SSL_certs" do
     #test that self-signed exception is working
     @base_url = "https://self-signed.badssl.com/"
     @driver.get(@base_url)
-    @driver.save_screenshot('screenshots/rsec+selenium.png')
+    @driver.save_screenshot('screenshots/rsec+selenium+baddssl.png')
     sleep 5
   end
 end
