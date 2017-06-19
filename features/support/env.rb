@@ -76,6 +76,40 @@ $ENV = ENV;
       )
     end
     Capybara.current_driver = :selenium
+  when "SAFARI"
+    #tested: Safari 10.1.1
+    #result: as of Safari 10 there are many problems and not all tests will work
+    #This is a standard property but doesn't seem to be working in Safari yet: 
+    # desired_caps = Selenium::WebDriver::Remote::Capabilities.safari(
+    #   {
+    #     accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
+    #   }
+    # )
+    Capybara.register_driver :selenium do |app|
+      Capybara::Selenium::Driver.new(
+        app,
+        browser: :safari #,
+        #desired_capabilities: desired_caps
+      )
+    end
+    Capybara.default_driver = :selenium
+  when "SAFARI-TECHNOLOGY-PREVIEW"
+    #This is what we use to test the Safari release channel. 
+    #You will have to install Safari Technology Preview from Apple.
+    desired_caps = Selenium::WebDriver::Remote::Capabilities.safari(
+      {
+        accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
+      }
+    )
+    Capybara.register_driver :selenium do |app|
+      Capybara::Selenium::Driver.new(
+        app,
+        browser: :safari,
+        driver_path: '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver',
+        desired_capabilities: desired_caps
+      )
+    end
+    Capybara.default_driver = :selenium
   else
     Capybara.register_driver :selenium do |app|
       caps = Selenium::WebDriver::Remote::Capabilities.firefox(

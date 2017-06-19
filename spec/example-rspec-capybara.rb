@@ -53,7 +53,7 @@ when "FIREFOX-SAVED-PROFILE"
   puts "FireFox Profile: "+ENV['FFPROFILEPATH']
   Capybara.register_driver :selenium do |app|
     profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
-    caps = Selenium::WebDriver::Remote::Capabilities.firefox(
+    desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
         marionette: true,
         accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true"),
@@ -64,7 +64,7 @@ when "FIREFOX-SAVED-PROFILE"
     Capybara::Selenium::Driver.new(
       app,
       browser: :firefox,
-      desired_capabilities: caps
+      desired_capabilities: desired_caps
     )
   end
   Capybara.current_driver = :selenium
@@ -80,7 +80,42 @@ when "FIREFOX"
     Capybara::Selenium::Driver.new(
       app, 
       browser: :firefox,
-      desired_capabilities: caps
+      desired_capabilities: desired_caps
+    )
+  end
+  Capybara.default_driver = :selenium
+when "SAFARI"
+  #tested: Safari 10.1.1
+  #result: as of Safari 10 there are many problems and not all tests will work
+  #This is a standard property but doesn't seem to be working in Safari yet: 
+  # desired_caps = Selenium::WebDriver::Remote::Capabilities.safari(
+  #   {
+  #     accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
+  #   }
+  # )
+  Capybara.register_driver :selenium do |app|
+    Capybara::Selenium::Driver.new(
+      app,
+      browser: :safari #,
+      #desired_capabilities: desired_caps
+    )
+  end
+  Capybara.default_driver = :selenium
+when "SAFARI-TECHNOLOGY-PREVIEW"
+  #This is what we use to test the Safari release channel. 
+  #You will have to install Safari Technology Preview from Apple.
+  #This is a standard property but doesn't seem to be working in Safari yet:
+  # desired_caps = Selenium::WebDriver::Remote::Capabilities.safari(
+  #   {
+  #     accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
+  #   }
+  # )
+  Capybara.register_driver :selenium do |app|
+    Capybara::Selenium::Driver.new(
+      app,
+      browser: :safari,
+      driver_path: '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver' #,
+      #desired_capabilities: desired_caps
     )
   end
   Capybara.default_driver = :selenium
@@ -104,6 +139,8 @@ describe 'EXPIRED SSL CERT TEST', :js => true, :type => :feature do
   it "test ssl cert" do
     #test if ssl cert exception is working 
     visit 'https://self-signed.badssl.com/'
+    #puts page.driver.browser.manage.window.inspect
+    page.driver.browser.manage.window.resize_to 1024, 768
     page.save_screenshot('screenshots/rspec+capybara+selenium.png')
     sleep 5
   end

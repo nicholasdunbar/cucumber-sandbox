@@ -1,5 +1,5 @@
 # Sandbox for Cucumber, RSpec, Capybara and Marionette
-This is a full set-up of the above technologies since the FF48 switch to Marrionette. You can clone this repository for your own learning and start playing with these libraries. Since Marrionette is still being developed some features may not work.
+This is a full set-up of the above technologies since many browsers have been implementing the W3C standard for automation the Selenium and Capybara testing world has been in flux. There was the FF48 switch to Marrionette which now seems to be mostely stable and Safari is still transitioning. A lot of the examples on the web are out-of-date now. This project was created to give everyone a fresh start and a chance to see what a set-up looks like with the new stuff. In it you will find examples of using different browsers with different set-ups. You can clone this repository for your own learning and start playing with these libraries. Since Marrionette is still being developed a few features may not work. Safari is still further behind since (6/19/2017)  
 
 Tested on : Mac OSX 10.12.5 Sierra  
 
@@ -30,7 +30,7 @@ or for rspec+selenium
 
 **FireFox** - This sandbox supports the FireFox browser
 
-**WebKit** - This is not yet supported in this project
+**WebKit** - This is only partially supported. Apple has not completed implementing the full spec.  
 
 **Ruby** - RSpec, Capybara and Cucumber are all programmed in Ruby in this example, but you can get them in different languages.
 

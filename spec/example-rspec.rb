@@ -72,6 +72,22 @@ describe "SeleniumSpec" do
         }
       )
       @driver = Selenium::WebDriver.for :firefox, desired_capabilities: desired_caps
+    when "SAFARI"
+      #This is a standard property but doesn't seem to be working in Safari yet:
+      # desired_caps = Selenium::WebDriver::Remote::Capabilities.safari(
+      #   {
+      #     accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
+      #   }
+      # )
+      @driver = Selenium::WebDriver.for :safari #,desired_capabilities: desired_caps
+    when "SAFARI-TECHNOLOGY-PREVIEW"
+      #This is a standard property but doesn't seem to be working in Safari yet:
+      # desired_caps = Selenium::WebDriver::Remote::Capabilities.safari(
+      #   {
+      #     accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
+      #   }
+      # )
+      @driver = Selenium::WebDriver.for :safari, driver_path: '/Applications/Safari Technology Preview.app/Contents/MacOS/safaridriver' #,desired_capabilities: desired_caps
     else
       #default to Firefox
       #works <FF48 && >=FF48
