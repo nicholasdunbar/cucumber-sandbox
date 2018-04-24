@@ -19,12 +19,21 @@ describe "SeleniumSpec" do
   before(:each) do
     case ENV['BROWSER']
     when "CHROME"
+      options = Selenium::WebDriver::Chrome::Options.new
+      options.add_argument('--disable-popup-blocking')
+      options.add_argument('--disable-translate')
       if (ENV['ACCEPTALLCERTS'] == "true")
-        addswitch = %w[--ignore-certificate-errors --disable-popup-blocking --disable-translate]
+        #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
+        #addswitch = %w[--ignore-certificate-errors --disable-popup-blocking --disable-translate]
+        options.add_argument('--ignore-certificate-errors')
       else 
-        addswitch = %w[--disable-popup-blocking --disable-translate]
+        #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
+        #addswitch = %w[--disable-popup-blocking --disable-translate]
       end
-      @driver = Selenium::WebDriver.for :chrome, :switches => addswitch
+      #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
+      #@driver = Selenium::WebDriver.for :chrome, :switches => addswitch
+      #capybara (3.0.2) selenium-webdriver (3.11.0)
+      @driver = Selenium::WebDriver.for :chrome, options: options
     when "FIREFOX-HARDCODED-PROFILE"
       profile = Selenium::WebDriver::Firefox::Profile.new
       #this allows you to encode values into a temporary profile that exists only durring testing. 
@@ -39,30 +48,52 @@ describe "SeleniumSpec" do
       profile['browser.download.dir'] = File.expand_path("../../../", __FILE__)+"/downloads"
       profile['browser.helperApps.neverAsk.saveToDisk'] = "application/pdf"
       profile['plugin.disable_full_page_plugin_for_types'] = "application/pdf"
+      options = Selenium::WebDriver::Firefox::Options.new(profile: profile)
       desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
           marionette: true,
           accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
         }
       )
-      @driver = Selenium::WebDriver.for :firefox, :profile => profile, desired_capabilities: desired_caps
+      #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
+      #@driver = Selenium::WebDriver.for :firefox, :profile => profile, desired_capabilities: desired_caps
+      @driver = Selenium::WebDriver.for :firefox, options: options, desired_capabilities: desired_caps
 
+    # when "FIREFOX-SAVED-PROFILE"
+      #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1) and has been left 
+      #so that if you are using older browsers and need to set this up you still can 
+      #this uses a previously created profile in FF. You can look at the paths for each profile by typing
+      #in the URL bar about:profiles and then copy the path of the profile into your .env or .env.dev files
+      #this allows you to set certain things in the browser like SSL exceptions that you want to be applied 
+      #durring your tests. 
+      #Does not work before FF47 
+      # puts "FireFox Profile: "+ENV['FFPROFILEPATH']
+      # profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
+      # desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
+      #   {
+      #     marionette: true,
+      #     accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true"),
+      #     firefox_options: {profile: profile},
+      #   }
+      # )
+      # @driver = Selenium::WebDriver.for :firefox, desired_capabilities: desired_caps
     when "FIREFOX-SAVED-PROFILE"
+      #capybara (3.0.2) selenium-webdriver (3.11.0)
       #this uses a previously created profile in FF. You can look at the paths for each profile by typing
       #in the URL bar about:profiles and then copy the path of the profile into your .env or .env.dev files
       #this allows you to set certain things in the browser like SSL exceptions that you want to be applied 
       #durring your tests. 
       #Does not work before FF47 
       puts "FireFox Profile: "+ENV['FFPROFILEPATH']
-      profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
+      options = Selenium::WebDriver::Firefox::Options.new
+      options.profile = ENV['FFPROFILEPATH']
       desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
           marionette: true,
           accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true"),
-          firefox_options: {profile: profile},
         }
       )
-      @driver = Selenium::WebDriver.for :firefox, desired_capabilities: desired_caps
+      @driver = Selenium::WebDriver.for :firefox, options: options, desired_capabilities: desired_caps
     when "FIREFOX"
       #works >=FF48
       desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(

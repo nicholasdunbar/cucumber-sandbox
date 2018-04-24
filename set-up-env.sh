@@ -1,4 +1,7 @@
 #! /bin/bash
+
+#this script installs the dependancies
+
 #Check if ruby and rvm is installed
 command -v rvm >/dev/null 2>&1 || { echo >&2 "Attempting to install ruby and rvm"; curl -sSL https://get.rvm.io | bash -s stable --ruby; };
 command -v rvm >/dev/null 2>&1 || { echo >&2 "Ruby and rvm installation failure"; exit 1; };
@@ -22,6 +25,9 @@ if [[ -z $isBrew ]]; then
 else
   echo "Homebrew https://brew.sh is already installed";
 fi
+#install brew cask 
+#extend brew to have access to open source community of brew formulae 
+brew tap caskroom/cask;
 
 #install Marionette for Firefox
 isGeckodriver=$(brew list | xargs -0 | grep -E 'geckodriver');
@@ -35,7 +41,7 @@ fi
 isChromedriver=$(brew list | xargs -0 | grep -E 'chromedriver');
 if [[ -z $isChromedriver ]]; then
   echo "Installing chromedriver";
-  brew install chromedriver;
+  brew cask install chromedriver;
 else
   echo "chromedriver is already installed";
 fi

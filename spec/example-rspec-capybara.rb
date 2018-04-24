@@ -10,13 +10,22 @@ puts "WebDriver: "+ENV['BROWSER']
 
 case ENV['BROWSER']
 when "CHROME"
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('--disable-popup-blocking')
+  options.add_argument('--disable-translate')
   if (ENV['ACCEPTALLCERTS'] == "true")
-    addswitch = %w[--ignore-certificate-errors --disable-popup-blocking --disable-translate]
+    #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
+    #addswitch = %w[--ignore-certificate-errors --disable-popup-blocking --disable-translate]
+    options.add_argument('--ignore-certificate-errors')
   else 
-    addswitch = %w[--disable-popup-blocking --disable-translate]
+    #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
+    #addswitch = %w[--disable-popup-blocking --disable-translate]
   end
   Capybara.register_driver :selenium do |app|
-    Capybara::Selenium::Driver.new(app, browser: :chrome, :switches => addswitch)
+    #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
+    #Capybara::Selenium::Driver.new(app, browser: :chrome, :switches => addswitch)
+    #capybara (3.0.2) selenium-webdriver (3.11.0)
+    Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
   end
   Capybara.default_driver = :selenium
 when "FIREFOX-HARDCODED-PROFILE"
@@ -35,35 +44,66 @@ when "FIREFOX-HARDCODED-PROFILE"
     profile['browser.download.dir'] = File.expand_path("../../../", __FILE__)+"/downloads"
     profile['browser.helperApps.neverAsk.saveToDisk'] = "application/pdf"
     profile['plugin.disable_full_page_plugin_for_types'] = "application/pdf"
+    options = Selenium::WebDriver::Firefox::Options.new(profile: profile)
     desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
         marionette: true,
         accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
       }
     )
-    Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile, desired_capabilities: desired_caps)
+    #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
+    #Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile, desired_capabilities: desired_caps)
+    Capybara::Selenium::Driver.new(app, :browser => :firefox, options: options, desired_capabilities: desired_caps)
   end
   Capybara.default_driver = :selenium
-when "FIREFOX-SAVED-PROFILE"
+# when "FIREFOX-SAVED-PROFILE"
+  #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1) and has been left 
+  #so that if you are using older browsers and need to set this up you still can 
   #this uses a previously created profile in FF. You can look at the paths for each profile by typing
   #in the URL bar about:profiles and then copy the path of the profile into your .env or .env.dev files
   #this allows you to set certain things in the browser like SSL exceptions that you want to be applied 
   #durring your tests. 
   #Does not work before FF47 
+  # puts "FireFox Profile: "+ENV['FFPROFILEPATH']
+  # Capybara.register_driver :selenium do |app|
+  #   profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
+  #   desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
+  #     {
+  #       marionette: true,
+  #       accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true"),
+  #       firefox_options: {profile: profile},
+  #     }
+  #   )
+  # 
+  #   Capybara::Selenium::Driver.new(
+  #     app,
+  #     browser: :firefox,
+  #     desired_capabilities: desired_caps
+  #   )
+  # end
+  # Capybara.current_driver = :selenium
+when "FIREFOX-SAVED-PROFILE"
+  #capybara (3.0.2) selenium-webdriver (3.11.0)
+  #this uses a previously created profile in FF. You can look at the profile name by typing
+  #in the URL bar about:profiles and then copy the name of the profile into your .env or .env.dev files
+  #this allows you to set certain things in the browser like SSL exceptions that you want to be applied 
+  #durring your tests. 
+  #Does not work before FF47 
   puts "FireFox Profile: "+ENV['FFPROFILEPATH']
   Capybara.register_driver :selenium do |app|
-    profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
+    options = Selenium::WebDriver::Firefox::Options.new
+    options.profile = ENV['FFPROFILEPATH']
     desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
         marionette: true,
         accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true"),
-        firefox_options: {profile: profile},
       }
     )
     
     Capybara::Selenium::Driver.new(
       app,
       browser: :firefox,
+      options: options,
       desired_capabilities: desired_caps
     )
   end
@@ -138,9 +178,12 @@ Capybara.default_max_wait_time = (ENV['TIMEOUT'] || 20).to_i
 describe 'EXPIRED SSL CERT TEST', :js => true, :type => :feature do
   it "test ssl cert" do
     #test if ssl cert exception is working 
+    #visit 'https://www.google.com/'
     visit 'https://self-signed.badssl.com/'
     #puts page.driver.browser.manage.window.inspect
-    page.driver.browser.manage.window.resize_to 1024, 768
+    #worked < chromedriver 2.33 with Chrome 62.
+    #page.driver.browser.manage.window.resize_to 1024, 768
+    page.current_window.resize_to 1024, 768
     page.save_screenshot('screenshots/rspec+capybara+selenium.png')
     sleep 5
   end

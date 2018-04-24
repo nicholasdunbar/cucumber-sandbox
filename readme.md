@@ -1,10 +1,18 @@
 # Sandbox for Cucumber, RSpec, Capybara and Marionette
-This is a full set-up of the above technologies since many browsers have been implementing the W3C standard for automation the Selenium and Capybara testing world has been in flux. There was the FF48 switch to Marrionette which now seems to be mostely stable and Safari is still transitioning. A lot of the examples on the web are out-of-date now. This project was created to give everyone a fresh start and a chance to see what a set-up looks like with the new stuff. In it you will find examples of using different browsers with different set-ups. You can clone this repository for your own learning and start playing with these libraries. Since Marrionette is still being developed a few features may not work. Safari is still further behind since (6/19/2017)  
+
+If you want to build Rspec or Cucumber tests on top of Selenium and Capybara...
+
+This is a full set-up of the above technologies since many browsers have been implementing the W3C standard for automation the Selenium and Capybara testing world has been in flux.  
+
+There was the FF48 switch to Marionette which now seems to be mostly stable and Safari is still transitioning. A lot of the examples on the web are out-of-date now. This project was created to give everyone a fresh start and a chance to see what a set-up looks like with the new stuff. In it you will find examples of using different browsers with different initializations. You can clone this repository for your own learning and start playing with these libraries. Since Marionette is still being developed a few features may not work. Safari is still further behind since (6/19/2017)  
 
 Tested on : Mac OSX 10.12.5 Sierra  
 
 ## How to set up the environment
 run the bash script `set-up-env.sh`
+
+## How to upgrade the environment
+run the bash script `upgrade-env.sh`
 
 ## Examples of how to use different technology combinations
 cucumber+capybara - multiple examples in features folder  
@@ -141,6 +149,8 @@ For more information on configuring your tests with a pre-existing FireFox Profi
 **Poltergeist** - A headless driver which integrates Capybara with PhantomJS. It is truly headless, so doesn't require Xvfb to run on your CI server. It will also detect and report any Javascript errors that happen within the page.
 
 **rino** - Cucumber step_definitions can be written using javascript with node `npm install -g cucumber`
+
+**W3C** - World Wide Web Consortium standard for webdrivers that FireFox and Safari are working to implement https://www.w3.org/TR/webdriver/  
 
 
 

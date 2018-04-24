@@ -27,13 +27,22 @@ $ENV = ENV;
 
   case $ENV['BROWSER']
   when "CHROME"
+    options = Selenium::WebDriver::Chrome::Options.new
+    options.add_argument('--disable-popup-blocking')
+    options.add_argument('--disable-translate')
     if (ENV['ACCEPTALLCERTS'] == "true")
-      addswitch = %w[--ignore-certificate-errors --disable-popup-blocking --disable-translate]
+      #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
+      #addswitch = %w[--ignore-certificate-errors --disable-popup-blocking --disable-translate]
+      options.add_argument('--ignore-certificate-errors')
     else 
-      addswitch = %w[--disable-popup-blocking --disable-translate]
+      #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
+      #addswitch = %w[--disable-popup-blocking --disable-translate]
     end
     Capybara.register_driver :selenium do |app|
-      Capybara::Selenium::Driver.new(app, browser: :chrome, :switches => addswitch)
+      #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
+      #Capybara::Selenium::Driver.new(app, browser: :chrome, :switches => addswitch)
+      #capybara (3.0.2) selenium-webdriver (3.11.0)
+      Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
     end
     Capybara.default_driver = :selenium
   when "FIREFOX-HARDCODED-PROFILE"
@@ -48,30 +57,57 @@ $ENV = ENV;
       profile['browser.download.dir'] = File.expand_path("../../../", __FILE__)+"/downloads"
       profile['browser.helperApps.neverAsk.saveToDisk'] = "application/pdf"
       profile['plugin.disable_full_page_plugin_for_types'] = "application/pdf"
+      options = Selenium::WebDriver::Firefox::Options.new(profile: profile)
       desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
           marionette: true,
           accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
         }
       )
-      Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile, desired_capabilities: desired_caps)
+      #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
+      #Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile, desired_capabilities: desired_caps)
+      Capybara::Selenium::Driver.new(app, :browser => :firefox, options: options, desired_capabilities: desired_caps)
     end
     Capybara.default_driver = :firefox
+  #when "FIREFOX-SAVED-PROFILE"
+     #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1) and has been left 
+     #so that if you are using older browsers and need to set this up you still can 
+     #Register driver to use a pre-saved FireFox Profile (Does not work before FF47)
+     # puts "FireFox Profile: "+ENV['FFPROFILEPATH']
+     # Capybara.register_driver :selenium do |app|
+     #   profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
+     #   caps = Selenium::WebDriver::Remote::Capabilities.firefox(
+     #     {
+     #       marionette: true,
+     #       accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true"),
+     #       firefox_options: {profile: profile}
+     #     }
+     #   )
+     #   Capybara::Selenium::Driver.new(
+     #     app,
+     #     browser: :firefox,
+     #     desired_capabilities: caps
+     #   )
+     # end
+     # Capybara.current_driver = :selenium
   when "FIREFOX-SAVED-PROFILE"
+    #capybara (3.0.2) selenium-webdriver (3.11.0)
     #Register driver to use a pre-saved FireFox Profile (Does not work before FF47)
     puts "FireFox Profile: "+ENV['FFPROFILEPATH']
     Capybara.register_driver :selenium do |app|
-      profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
+      options = Selenium::WebDriver::Firefox::Options.new
+      options.profile = ENV['FFPROFILEPATH']
+      #see standard properties here: https://www.w3.org/TR/webdriver/#capabilities
       caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
           marionette: true,
           accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true"),
-          firefox_options: {profile: profile}
         }
       )
       Capybara::Selenium::Driver.new(
         app,
         browser: :firefox,
+        options: options,
         desired_capabilities: caps
       )
     end
@@ -79,6 +115,7 @@ $ENV = ENV;
   when "SAFARI"
     #tested: Safari 10.1.1
     #result: as of Safari 10 there are many problems and not all tests will work
+    #see standard properties here: https://www.w3.org/TR/webdriver/#capabilities
     #This is a standard property but doesn't seem to be working in Safari yet: 
     # desired_caps = Selenium::WebDriver::Remote::Capabilities.safari(
     #   {
@@ -96,6 +133,8 @@ $ENV = ENV;
   when "SAFARI-TECHNOLOGY-PREVIEW"
     #This is what we use to test the Safari release channel. 
     #You will have to install Safari Technology Preview from Apple.
+    
+    #see standard properties here: https://www.w3.org/TR/webdriver/#capabilities
     desired_caps = Selenium::WebDriver::Remote::Capabilities.safari(
       {
         accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
@@ -112,6 +151,8 @@ $ENV = ENV;
     Capybara.default_driver = :selenium
   else
     Capybara.register_driver :selenium do |app|
+      #default to FireFox
+      #see standard properties here: https://www.w3.org/TR/webdriver/#capabilities
       caps = Selenium::WebDriver::Remote::Capabilities.firefox(
         {
           marionette: true,
