@@ -45,6 +45,7 @@ when "FIREFOX-HARDCODED-PROFILE"
     profile['browser.helperApps.neverAsk.saveToDisk'] = "application/pdf"
     profile['plugin.disable_full_page_plugin_for_types'] = "application/pdf"
     options = Selenium::WebDriver::Firefox::Options.new(profile: profile)
+    #https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings#ssl-certificates
     desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
         marionette: true,
@@ -81,7 +82,7 @@ when "FIREFOX-HARDCODED-PROFILE"
   #     desired_capabilities: desired_caps
   #   )
   # end
-  # Capybara.current_driver = :selenium
+  # Capybara.current_driver = :selenium 
 when "FIREFOX-SAVED-PROFILE"
   #capybara (3.0.2) selenium-webdriver (3.11.0)
   #this uses a previously created profile in FF. You can look at the profile name by typing
@@ -93,6 +94,7 @@ when "FIREFOX-SAVED-PROFILE"
   Capybara.register_driver :selenium do |app|
     options = Selenium::WebDriver::Firefox::Options.new
     options.profile = ENV['FFPROFILEPATH']
+    #https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings#ssl-certificates
     desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
       {
         marionette: true,
@@ -110,6 +112,7 @@ when "FIREFOX-SAVED-PROFILE"
   Capybara.current_driver = :selenium
 when "FIREFOX"
   #works >=FF48
+  #https://github.com/SeleniumHQ/selenium/wiki/Ruby-Bindings#ssl-certificates
   desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
     {
       marionette: true,
@@ -150,6 +153,7 @@ when "SAFARI-TECHNOLOGY-PREVIEW"
   #     accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
   #   }
   # )
+  
   Capybara.register_driver :selenium do |app|
     Capybara::Selenium::Driver.new(
       app,
@@ -183,6 +187,7 @@ describe 'EXPIRED SSL CERT TEST', :js => true, :type => :feature do
     #puts page.driver.browser.manage.window.inspect
     #worked < chromedriver 2.33 with Chrome 62.
     #page.driver.browser.manage.window.resize_to 1024, 768
+    # > chromedriver 2.33 with Chrome 62.
     page.current_window.resize_to 1024, 768
     page.save_screenshot('screenshots/rspec+capybara+selenium.png')
     sleep 5
