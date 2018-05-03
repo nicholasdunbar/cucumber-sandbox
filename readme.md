@@ -122,7 +122,7 @@ Example of a more complicated Cucumber that logs in to wellsfargo and downloads 
 `rspec spec/example-rspec-capybara.rb`  
 Example of using Capybara with RSpec
 
-`rspec spec/example-rspec.rb``  
+`rspec spec/example-rspec.rb`  
 Example of using pure RSpec with Selenium
 
 ## Step Definition Notes
