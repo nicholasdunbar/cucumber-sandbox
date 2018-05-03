@@ -38,7 +38,7 @@ else
   echo "Firefox Marionette geckodriver is already installed";
 fi
 #install chromedriver for Chrome
-isChromedriver=$(brew list | xargs -0 | grep -E 'chromedriver');
+isChromedriver=$(brew cask list | xargs -0 | grep -E 'chromedriver');
 if [[ -z $isChromedriver ]]; then
   echo "Installing chromedriver";
   brew cask install chromedriver;
