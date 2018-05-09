@@ -180,10 +180,9 @@ Capybara.default_max_wait_time = (ENV['TIMEOUT'] || 20).to_i
 #then if you are using FireFox go to about:profiles in address bar and get the 
 #path to the FireFox Profile and set it in /features/step_definitions/.env.dev 
 #run test to see if the exception you
-describe 'EXPIRED SSL CERT TEST', :js => true, :type => :feature do
-  it "test ssl cert" do
+describe 'EXAMPLE TESTS', :js => true, :type => :feature do
+  it "ssl cert" do
     #test if ssl cert exception is working 
-    #visit 'https://www.google.com/'
     visit 'https://self-signed.badssl.com/'
     #puts page.driver.browser.manage.window.inspect
     #worked < chromedriver 2.33 with Chrome 62.
@@ -191,6 +190,14 @@ describe 'EXPIRED SSL CERT TEST', :js => true, :type => :feature do
     # > chromedriver 2.33 with Chrome 62.
     page.current_window.resize_to 1024, 768
     page.save_screenshot('screenshots/rspec+capybara+selenium.png')
-    sleep 5
+    sleep 1
+  end
+  it "close page with alert open" do
+    visit 'http://www.javascripter.net/faq/confirm.htm'
+    page.current_window.resize_to 1024, 768
+    page.accept_alert do
+      click_button "Try it now"
+    end
+    sleep 1
   end
 end
