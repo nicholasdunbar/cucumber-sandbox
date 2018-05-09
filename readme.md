@@ -142,6 +142,7 @@ To stall a test so you can see what is going on
 
 
 For more information on configuring your tests with a pre-existing FireFox Profile check out the following thread: [Cannot set FireFox Profile to work with Marrionette]( https://groups.google.com/forum/#!searchin/ruby-capybara/FireFox$20profile$20ssl%7Csort:relevance/ruby-capybara/AyAcBX9-lIE/1LpspvPqCwAJ)  
+[Session reset times out if alert already present when trying to close the page](https://github.com/teamcapybara/capybara/issues/1696)
 
 
 
