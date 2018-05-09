@@ -57,14 +57,15 @@ when "FIREFOX-HARDCODED-PROFILE"
     Capybara::Selenium::Driver.new(app, :browser => :firefox, options: options, desired_capabilities: desired_caps)
   end
   Capybara.default_driver = :selenium
+## legacy capybara (2.14.2)
 # when "FIREFOX-SAVED-PROFILE"
-  #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1) and has been left 
-  #so that if you are using older browsers and need to set this up you still can 
-  #this uses a previously created profile in FF. You can look at the paths for each profile by typing
-  #in the URL bar about:profiles and then copy the path of the profile into your .env or .env.dev files
-  #this allows you to set certain things in the browser like SSL exceptions that you want to be applied 
-  #durring your tests. 
-  #Does not work before FF47 
+  ## this was used with capybara (2.14.2) and selenium-webdriver (3.4.1) and has been left 
+  ## so that if you are using older browsers and need to set this up you still can 
+  ## this uses a previously created profile in FF. You can look at the paths for each profile by typing
+  ## in the URL bar about:profiles and then copy the path of the profile into your .env or .env.dev files
+  ## this allows you to set certain things in the browser like SSL exceptions that you want to be applied 
+  ## durring your tests. 
+  ## Does not work before FF47 
   # puts "FireFox Profile: "+ENV['FFPROFILEPATH']
   # Capybara.register_driver :selenium do |app|
   #   profile = Selenium::WebDriver::Zipper.zip(ENV['FFPROFILEPATH'])
@@ -88,7 +89,7 @@ when "FIREFOX-SAVED-PROFILE"
   #this uses a previously created profile in FF. You can look at the profile name by typing
   #in the URL bar about:profiles and then copy the name of the profile into your .env or .env.dev files
   #this allows you to set certain things in the browser like SSL exceptions that you want to be applied 
-  #durring your tests. 
+  #durring your tests. It does take longer to load 
   #Does not work before FF47 
   puts "FireFox Profile: "+ENV['FFPROFILEPATH']
   Capybara.register_driver :selenium do |app|
