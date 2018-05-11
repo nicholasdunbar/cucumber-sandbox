@@ -12,7 +12,7 @@ Tested on : Mac OSX 10.12.5 Sierra
 run the bash script `set-up-env.sh`
 
 ## How to upgrade the environment
-run the bash script `upgrade-env.sh`
+run the bash script `tools/upgrade-env.sh`
 
 ## Examples of how to use different technology combinations
 cucumber+capybara - multiple examples in features folder  
