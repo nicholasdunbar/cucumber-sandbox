@@ -32,6 +32,9 @@ From the root of the project run
 `rspec spec/example-rspec-capybara.rb`  
 or for rspec+selenium  
 `rspec spec/example-rspec.rb`  
+To run with a custom configuration duplicate spec/.env.dev to something like spec/.env.custom  
+`TARGET=custom rspec spec/example-rspec-capybara.rb`  
+`TARGET=custom rspec spec/example-rspec.rb`  
 
 ## Dependancies
 **Chrome** - This sandbox supports the Chrome browser
