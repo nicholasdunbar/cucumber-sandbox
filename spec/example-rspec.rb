@@ -12,6 +12,12 @@ end
 
 #ENV variable is loaded in spec_helper.rb from .env or .env.dev
 puts "WebDriver: "+ENV['BROWSER']
+if (ENV['FIREFOXPATH'] != 'default')
+  puts "Using executable: "+ENV['FIREFOXPATH']
+end
+if (ENV['BROWSER'] == 'FIREFOX-SAVED-PROFILE')
+  puts "FireFox Profile: "+ENV['FFPROFILEPATH']
+end
 
 #Test rspec using just selenium
 describe "SeleniumSpec" do
@@ -55,6 +61,9 @@ describe "SeleniumSpec" do
           accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
         }
       )
+      if (ENV['FIREFOXPATH'] != 'default')
+        Selenium::WebDriver::Firefox.path = ENV['FIREFOXPATH']
+      end
       #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
       #@driver = Selenium::WebDriver.for :firefox, :profile => profile, desired_capabilities: desired_caps
       @driver = Selenium::WebDriver.for :firefox, options: options, desired_capabilities: desired_caps
@@ -84,7 +93,7 @@ describe "SeleniumSpec" do
       #this allows you to set certain things in the browser like SSL exceptions that you want to be applied 
       #durring your tests. 
       #Does not work before FF47 
-      puts "FireFox Profile: "+ENV['FFPROFILEPATH']
+
       options = Selenium::WebDriver::Firefox::Options.new
       options.profile = ENV['FFPROFILEPATH']
       desired_caps = Selenium::WebDriver::Remote::Capabilities.firefox(
@@ -93,6 +102,9 @@ describe "SeleniumSpec" do
           accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true"),
         }
       )
+      if (ENV['FIREFOXPATH'] != 'default')
+        Selenium::WebDriver::Firefox.path = ENV['FIREFOXPATH']
+      end
       @driver = Selenium::WebDriver.for :firefox, options: options, desired_capabilities: desired_caps
     when "FIREFOX"
       #works >=FF48
@@ -102,6 +114,9 @@ describe "SeleniumSpec" do
           accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
         }
       )
+      if (ENV['FIREFOXPATH'] != 'default')
+        Selenium::WebDriver::Firefox.path = ENV['FIREFOXPATH']
+      end
       @driver = Selenium::WebDriver.for :firefox, desired_capabilities: desired_caps
     when "SAFARI"
       #This is a standard property but doesn't seem to be working in Safari yet:

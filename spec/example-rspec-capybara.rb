@@ -5,6 +5,12 @@ require 'selenium-webdriver'
 
 #ENV variable is loaded in spec_helper.rb from .env or .env.dev
 puts "WebDriver: "+ENV['BROWSER']
+if (ENV['FIREFOXPATH'] != 'default')
+  puts "Using executable: "+ENV['FIREFOXPATH']
+end
+if (ENV['BROWSER'] == 'FIREFOX-SAVED-PROFILE')
+  puts "FireFox Profile: "+ENV['FFPROFILEPATH']
+end
 
 ##############################CONFIG##############################
 
@@ -52,6 +58,9 @@ when "FIREFOX-HARDCODED-PROFILE"
         accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
       }
     )
+    if (ENV['FIREFOXPATH'] != 'default')
+      Selenium::WebDriver::Firefox.path = ENV['FIREFOXPATH']
+    end
     #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
     #Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile, desired_capabilities: desired_caps)
     Capybara::Selenium::Driver.new(app, :browser => :firefox, options: options, desired_capabilities: desired_caps)
@@ -91,7 +100,7 @@ when "FIREFOX-SAVED-PROFILE"
   #this allows you to set certain things in the browser like SSL exceptions that you want to be applied 
   #durring your tests. It does take longer to load 
   #Does not work before FF47 
-  puts "FireFox Profile: "+ENV['FFPROFILEPATH']
+  
   Capybara.register_driver :selenium do |app|
     options = Selenium::WebDriver::Firefox::Options.new
     options.profile = ENV['FFPROFILEPATH']
@@ -110,6 +119,10 @@ when "FIREFOX-SAVED-PROFILE"
       desired_capabilities: desired_caps
     )
   end
+   
+  if (ENV['FIREFOXPATH'] != 'default')
+    Selenium::WebDriver::Firefox.path = ENV['FIREFOXPATH']
+  end 
   Capybara.current_driver = :selenium
 when "FIREFOX"
   #works >=FF48
@@ -126,6 +139,9 @@ when "FIREFOX"
       browser: :firefox,
       desired_capabilities: desired_caps
     )
+  end
+  if (ENV['FIREFOXPATH'] != 'default')
+    Selenium::WebDriver::Firefox.path = ENV['FIREFOXPATH']
   end
   Capybara.default_driver = :selenium
 when "SAFARI"

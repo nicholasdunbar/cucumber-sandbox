@@ -113,11 +113,19 @@ RSpec.configure do |config|
     c.syntax = [:should, :expect]
   end
 end
-#initialize environment variables from the spec directory
-if File.file?('spec/.env.dev')
-  puts 'Config: .env.dev'
-  DotEnv.get_environment('spec/.env.dev')
+
+
+#load environment variables from .env file
+#use > TARGET=sometarget rspec spec/ 
+# to load a specific .env.sometarget
+$relative_path = File.expand_path("../", __FILE__);
+if !ENV['TARGET'].nil? && File.file?("#{$relative_path}/.env.#{ENV['TARGET']}")
+  puts "Using: .env.#{ENV['TARGET']} config"
+  DotEnv.get_environment("#{$relative_path}/.env.#{ENV['TARGET']}")
+elsif File.file?("#{$relative_path}/.env.dev")
+    puts 'Using: .env.dev config'
+    DotEnv.get_environment("#{$relative_path}/.env.dev")
 else
-  puts 'Config: .env'
-  DotEnv.get_environment('spec/.env')
+  puts 'Using: .env config'
+  DotEnv.get_environment("#{$relative_path}/.env")
 end

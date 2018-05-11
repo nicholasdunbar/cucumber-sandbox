@@ -20,6 +20,9 @@ else
   DotEnv.get_environment("#{$relative_path}/.env")
 end
 puts "WebDriver: #{ENV['BROWSER']}"
+if (ENV['BROWSER'] == 'FIREFOX-SAVED-PROFILE')
+  puts "FireFox Profile: #{ENV['FFPROFILEPATH']}"
+end
 puts "Timeout: #{ENV['TIMEOUT']}"
 #make environment available to all scripts globally 
 $ENV = ENV;
@@ -64,6 +67,9 @@ $ENV = ENV;
           accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
         }
       )
+      if (ENV['FIREFOXPATH'] != 'default')
+        Selenium::WebDriver::Firefox.path = ENV['FIREFOXPATH']
+      end
       #this was used with capybara (2.14.2) and selenium-webdriver (3.4.1)
       #Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile, desired_capabilities: desired_caps)
       Capybara::Selenium::Driver.new(app, :browser => :firefox, options: options, desired_capabilities: desired_caps)
@@ -104,6 +110,9 @@ $ENV = ENV;
           accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true"),
         }
       )
+      if (ENV['FIREFOXPATH'] != 'default')
+        Selenium::WebDriver::Firefox.path = ENV['FIREFOXPATH']
+      end
       Capybara::Selenium::Driver.new(
         app,
         browser: :firefox,
@@ -159,6 +168,9 @@ $ENV = ENV;
           accept_insecure_certs: (ENV['ACCEPTALLCERTS'] == "true")
         }
       )
+      if (ENV['FIREFOXPATH'] != 'default')
+        Selenium::WebDriver::Firefox.path = ENV['FIREFOXPATH']
+      end
       Capybara::Selenium::Driver.new(
         app,
         browser: :firefox,
