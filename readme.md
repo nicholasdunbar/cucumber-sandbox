@@ -4,9 +4,9 @@ If you want to build Rspec or Cucumber tests on top of Selenium and Capybara...
 
 This is a full set-up of the above technologies since many browsers have been implementing the W3C standard for automation the Selenium and Capybara testing world has been in flux.  
 
-There was the FF48 switch to Marionette which now seems to be mostly stable and Safari is still transitioning. A lot of the examples on the web are out-of-date now. This project was created to give everyone a fresh start and a chance to see what a set-up looks like with the new stuff. In it you will find examples of using different browsers with different initializations. You can clone this repository for your own learning and start playing with these libraries. Since Marionette is still being developed a few features may not work. Safari is still further behind since (6/19/2017)  
+There was the FF48 switch to Marionette which now seems to be mostly stable and Safari is still transitioning. A lot of the examples on the web are out-of-date now. This project was created to give everyone a fresh start and a chance to see what a set-up looks like with the new stuff. In it you will find examples of using different browsers with different initializations. You can clone this repository for your own learning and start playing with these libraries. Since Marionette is still being developed a few features may not work. Safari is still further behind since (5/11/2018)  
 
-Tested on : Mac OSX 10.12.5 Sierra  
+Last Tested on : Mac OSX 10.13.4 HighSierra (5/11/2018)  
 
 ## How to set up the environment
 run the bash script `set-up-env.sh`
